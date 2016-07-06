@@ -5,7 +5,7 @@
     c. yum install libnl-devel<br>
     d. yum install libgcrypt-devel<br>
 
-2. In VM web browser...Go here: https://drive.google.com/file/d/0B64GIIlkLQC6TzlTaVB6d1hNZ0E/view?usp=sharing. Get sharkPyBundled.tgz. Blithely Google 'can't scan for viruses' warning. File is too big. Besides, you can trust me! :)<br>
+2. In VM web browser...Go here: https://drive.google.com/file/d/0B64GIIlkLQC6TzlTaVB6d1hNZ0E/view?usp=sharing. Get sharkPyBundled.tgz. Blithely ignore Google's 'can't scan for viruses' warning. File is too big. Besides, you can trust me! :)<br>
 
 3. cd into directory containing downloaded tarball. and run 'tar -zxvf sharkPyBundled.tgz'.<br>
 4. cd sp<br>
