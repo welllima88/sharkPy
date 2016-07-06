@@ -2,7 +2,7 @@
 
 ##Requried Wireshark libs. 
 
-Required Wireshark libs can be found in Wireshark-2.0.1 stable release. Newer will probably work as well. Older will not work. Required libs must be in system lib search path. My config looks like this.
+Required Wireshark libs can be found in Wireshark-2.0.1 stable release. Newer will probably work as well. Older will not work. Required libs must be in system lib search path. My sys looks like this.
 
 [me@localhost ~]$ ls -l /usr/local/lib<br>
 total 173384<br>
