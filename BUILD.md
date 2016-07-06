@@ -48,6 +48,10 @@ total 6200<br>
 -rw-rw-r--. 1 root root  196662 Jul  5 21:08 wimaxmacphy.so<br>
 -rw-rw-r--. 1 root root 1766674 Jul  5 21:08 wimax.so<br>
 
+##Other required libs
+
+Will need libpcap.so.1, libglib-2.0, libnl.so.1, libgcrypt.so.11.
+
 
 ##TO BUILD/INSTALL
 
