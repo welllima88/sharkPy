@@ -4,5 +4,5 @@ Go here: https://drive.google.com/file/d/0B64GIIlkLQC6TzlTaVB6d1hNZ0E/view?usp=s
 
 1. tar -zxvf sharkPyBundled.tgz.
 2. cd sp
-3. sudo ./setup.py install --or-- equiv sudo python setup.py install
+3. sudo ./setup.py install --or-- sudo python setup.py install
 4. profit!
