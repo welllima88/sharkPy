@@ -35,7 +35,7 @@ file_dissect_module = Extension('dissect',
                                    glib_includes[0],
                                    glib_includes[1],
                                    'sharkPy/common/c_src'],
-                    runtime_library_dirs=[install_dir+'/dissect/64_bit_libs', install_dir+'/dissect/64_bit_libs/plugins/1.8.10', site.getsitepackages()[0]])
+                    runtime_library_dirs=[install_dir+'/dissect/64_bit_libs', install_dir+'/dissect/64_bit_libs/plugins', site.getsitepackages()[0]])
 
 wire_write_module = Extension('write',
                               sources=['sharkPy/write/c_src/common.c'],
