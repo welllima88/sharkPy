@@ -17,7 +17,7 @@ lrwxrwxrwx. 1 root root        18 Jul  5 14:09 libwsutil.so.6 -> libwsutil.so.6.
 -rwxr-xr-x. 1 root root    413792 Jul  5 14:09 libwsutil.so.6.0.0<br>
 drwxr-xr-x. 3 root root        20 Jul  1 11:37 wireshark<br>
 
-SharkPy expects Wireshark plugins to be in site.getsitepackages/sharkPy/64_bit_libs/plugins. Looks like this on my system.<br>
+SharkPy expects Wireshark plugins to be in [python2.7 site-packages dir]/sharkPy/64_bit_libs/plugins. Looks like this on my system.<br>
 
 [me@localhost ~]$ ls -l /usr/lib64/python2.7/site-packages/sharkPy/dissect/64_bit_libs/plugins/<br>
 total 6200<br>
