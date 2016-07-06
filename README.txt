@@ -51,7 +51,7 @@ decodeAs=([ ("tcp.port", [7771] ,"ssl") ])
 #always be the case. In fact, should probably remove this as an option.
 ###################################################################################################
 
-rst=cap_file_dissection("/root/Desktop/packetCapture.pcap", decodeAs, None, True)
+rst=cap_file_dissection("/home/me/tst.pcap", decodeAs, None, True)
 
 ###################################################################################################
 #Can get a the handle to the spawned daemon if useful for something.

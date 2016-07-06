@@ -43,7 +43,7 @@
 
 
 import sys
-import os,ctypes,re, site
+import os,ctypes,ctypes.util,re, site
 from multiprocessing import Process
 from multiprocessing import Queue as pQueue
 
@@ -388,7 +388,7 @@ class file_dissector(object):
             os.environ["WIRESHARK_PLUGIN_DIR"]=self.wireshark_plugin_dir
 
         elif(wireshark_plugin_dir is None):
-            os.environ["WIRESHARK_PLUGIN_DIR"]=site.getsitepackages()[0]+'sharkPy/64_bit_libs/plugins/1.8.10/'
+            os.environ["WIRESHARK_PLUGIN_DIR"]=site.getsitepackages()[0]+'sharkPy/64_bit_libs/plugins'
 
 
     def set_libs(self, lib_directories=[]):
@@ -479,37 +479,37 @@ class file_dissector(object):
                             libsharkPy=os.path.join(each_dir,name)                
 
         if(libnl is None):
-            libnl = ctypes.cdll.find_library("libnl")
+            libnl = ctypes.util.find_library("nl")
             if(libnl is None):
                 raise RuntimeError("Could not locate libnl.")
             
         if(libpcap is None):
-            libpcap = ctypes.cdll.find_library("libpcap")
+            libpcap = ctypes.util.find_library("pcap")
             if(libpcap is None):
                 raise RuntimeError("Could not locate libpcap.")
 
         if(libgcrypt is None):
-            libgcrypt = ctypes.cdll.find_library("libgcrypt")
+            libgcrypt = ctypes.util.find_library("gcrypt")
             if(libgcrypt is None):
                 raise RuntimeError("Could not locate libgcrypt.")
 
         if(libwiretap is None):
-            libwiretap = ctypes.cdll.find_library("libwiretap")
+            libwiretap = ctypes.util.find_library("wiretap")
             if(libwiretap is None):
                 raise RuntimeError("Could not locate libwiretap.")
             
         if(libwsutil is None):
-            libwsutil = ctypes.cdll.find_library("libwsutil")
+            libwsutil = ctypes.util.find_library("wsutil")
             if(libwsutil is None):
                 raise RuntimeError("Could not locate libwsutil.")
   
         if(libwireshark is None):
-            libwireshark = ctypes.cdll.find_library("libwireshark")
+            libwireshark = ctypes.util.find_library("wireshark")
             if(libwireshark is None):
                 raise RuntimeError("Could not locate libwireshark.")
             
         if(libsharkPy is None):
-            libsharkPy = ctypes.cdll.find_library("dissect")
+            libsharkPy = ctypes.util.find_library("dissect")
             if(libsharkPy is None):
                 raise RuntimeError("Could not locate dissect.")
 
@@ -560,7 +560,7 @@ def collect_proto_ids(start_node, id_dict):
 # an entire capture file. Each capture file MUST be processed in its own child process. 
 # After sucessful processing this function receives results as a list of dissection trees, one
 # tree for each packet in capture file.
-def cap_file_dissection(capture_file_path, decode_as_list=[], dtimeout=None, is_daemon=True):
+def cap_file_dissection(capture_file_path, decode_as_list=[], dtimeout=10, is_daemon=True):
 
     sharedQ=pQueue()
     decodeAs=decode_as_list
@@ -621,7 +621,7 @@ def run_in_new_proc(sharedProcQ, pcap_path, decode_as=None):
         raise ValueError(" Exists, but not a file: %s"%pcap_path)
        
     #non-standard lib paths
-    lib_directories=[site.getsitepackages()[0],site.getsitepackages()[0]+'/sharkPy/dissect/64_bit_libs']
+    lib_directories=[site.getsitepackages()[0],site.getsitepackages()[0]+'/sharkPy/dissect/64_bit_libs','/usr/local/lib']
 
     file_path=pcap_path.encode('utf_8','strict')
     
@@ -687,7 +687,7 @@ if __name__=='__main__':
 
     try:
         #run dissection in its own subprocess
-        rst=cap_file_dissection("/root/Desktop/chrome_single_session_hostname_sf.pcap", decodeAs, None, True)
+        rst=cap_file_dissection("/home/me/tst.pcapng", decodeAs, 5, True)
     except Exception as e:
         print e.message, e.args
         sys.exit()

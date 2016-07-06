@@ -44,6 +44,15 @@ wire_write_module = Extension('write',
                               include_dirs=['sharkPy/write/c_src'],
                               runtime_library_dirs=[install_dir+'/dissect/64_bit_libs'])
 
+#Thank you stackoverflow
+def package_files(directory):
+    paths = []
+    for (path, directories, filenames) in os.walk(directory):
+        for filename in filenames:
+            paths.append(os.path.join('..', path, filename))
+    return paths
+
+setupfiles = package_files('sharkPy')
 
 setup(name='sharkPy',
       version='0.3Beta',
@@ -51,14 +60,6 @@ setup(name='sharkPy',
       ext_modules=[file_dissect_module,wire_write_module,],
       author='Mark Landriscina',
       packages=['sharkPy', 'sharkPy.dissect', 'sharkPy.write'],
-      package_dir={'sharkPy': 'sharkPy'},
-      package_data={'':['dissect',
-                        'dissect/64_bit_libs/*',
-                        'dissect/64_bit_libs/plugins/*',
-                        'dissect/64_bit_libs/plugins/1.8.10/*',
-                        'dissect/c_src/*',
-                        'dissect/c_src/wireshark-2.0.1/*',
-                        'write/c_src/*',
-                        'common',
-                        'common/c_src/*']})
+      package_data={'sharkPy':setupfiles} )
+
 

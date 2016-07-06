@@ -45,4 +45,5 @@
 from file_dissector import *
 
 class wire_dissector(file_dissector):
+    pass
     
