@@ -259,9 +259,9 @@ Example: I want to access the fvalue of the first node in pktDict['ip.host'].
 
 myfValue=pktDict\['ip.host']\[0].attributes['fvalue']. There you go. Easy as pie.
 
---pktDict['ip.host'] --> give me the list of nodes indexed by 'ip.host'
---pktDict\['ip.host']\[0] --> give me the fist element of the list of nodes indexed by 'ip.host'
---pktDict\['ip.host']\[0].attributes['fvalue'] --> give me the fvalue of the first element of the node list indexed by 'ip.host'.
+--pktDict['ip.host'] --> give me the list of nodes indexed by 'ip.host'<br/>
+--pktDict\['ip.host']\[0] --> give me the fist element of the list of nodes indexed by 'ip.host'<br/>
+--pktDict\['ip.host']\[0].attributes['fvalue'] --> give me the fvalue of the first element of the node list indexed by 'ip.host'.<br/>
 
 
 
