@@ -65,8 +65,8 @@ We can walk packet trees, printing out a representation of each packet. Note tha
 data structure, so you can access all the fields that you see in the resultant print out. Useful to explore
 structures/data organization.
 
-for each in pkts:
-    walk_print(each)
+for each in pkts:<br/>
+....walk_print(each)
 
 ***************************************************************************************************
 The above code is ok, but you probably care much more about the following!!!    
@@ -111,7 +111,7 @@ The print command above returns the following
 Let's print out each of the ipHost list elements.
 
 for each in ipHost:
-    print each
+....print each
 
 Here's the result. Check this out! Each returned tree node has *ATTRIBUTES* that can also be directly accessed.
 
