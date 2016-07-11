@@ -30,8 +30,8 @@ A familiarity with using Wireshark is assumed. Best to learn Wireshark basics be
 
 ##DISSECT PACKETS IN A CAPTURE FILE
 
-import sharkPy
-from sharkPy.dissect import *
+import sharkPy<br/>
+from sharkPy.dissect import *<br/>
 
 ***************************************************************************************************
 My example capture file has SSL traffic on nonstandard port, 7771. Tell sharkPy to treat this traffic as 
