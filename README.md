@@ -27,7 +27,7 @@ Modules are written such that sharkPy commands are non-blocking. Command results
 
 6. Build and install as little C-code as possible by linking to preexisting Wireshark shared libs.<br/>
 
-##SharkPy is provided "as-is" with NO WARRANTIES expressed or implied under GPLv2. Use at your own risk.
+SharkPy is provided "as-is" with NO WARRANTIES expressed or implied under GPLv2. Use at your own risk.
 
 
 #HOW-TO
