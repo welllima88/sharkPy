@@ -569,7 +569,8 @@ def dissect_file(file_path, timeout=10, options=[]):
 if __name__=='__main__':
         
     in_options=[(disopt.DECODE_AS, r'tcp.port==8888-8890,http'),
-             (disopt.DECODE_AS, r'tcp.port==9999:3,http')]
+                (disopt.DECODE_AS, r'tcp.port==9999:3,http')]
+    
     sorted_rtn_list=dissect_file(r'/home/me/tst.pcapng',timeout=20,options=in_options)
     
     if(sorted_rtn_list is not None):
