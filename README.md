@@ -1,7 +1,7 @@
 
 #SharkPy is
 
-version beta1.0
+Current version: beta 0.1
 
 A python module to dissect, analyze, and interact with network packet data as native Python objects using Wireshark and libpcap capabilities. sharkPy dissect modules extend and otherwise modify Wireshark's tshark. SharkPy packet injection module wraps useful libpcap functionality.<br/>
 
