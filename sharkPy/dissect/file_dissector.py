@@ -542,7 +542,8 @@ def run(shared_queue, file_path, timeout, options=[]):
 
 def dissect_file(file_path, timeout=10, options=[]):
     shared_queue = pQueue()
-         
+    sorted_rtn_list=None
+    
     try:
         #carry out dissections and return results as a dissect object
         p=Process(target=run,args=(shared_queue, file_path ,timeout,options))
