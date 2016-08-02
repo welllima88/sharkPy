@@ -33,7 +33,7 @@ SharkPy is provided "as-is" with NO WARRANTIES expressed or implied under GPLv2.
 
 ##Why sharkPy?
 
-SharkPy has a long-term goal of segmenting Wireshark's incredible diversity of capabilities into smaller, more modular, more easily compiled and linkable shared libraries. If successful, the Wireshark community and others should be able to more readily incorporate Wireshark's capabilities into other projects. This is what seperates this project from other similar efforts that marry Wireshark/tshark and Python. 
+SharkPy has a long-term goal of segmenting Wireshark's incredible diversity of capabilities into smaller, more modular, more easily compiled and linkable shared libraries. If successful, the Wireshark community and others should be able to more readily incorporate Wireshark's capabilities into other projects. This goal seperates sharkPy from other similar efforts that endeavor to marry Wireshark/tshark and Python. 
 
 The first step is provide Wireshark/tshark capabilities as Python modules that can be compiled/linked outside of Wireshark's normal build process. This has been achieved at least for some linux environments. Next step is to expand to a broader range of linux distros and Windows improving stability along the way. Once this is completed and sharkPy's capabilities are similar to those provided by tshark, the sharkPy project devs will start the process of segmenting the code base as described above.
 
