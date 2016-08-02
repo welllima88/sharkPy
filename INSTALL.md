@@ -2,7 +2,7 @@
 #INSTALL
 
 ## ubuntu-16.04-desktop-amd64 -- clean install
-sudo apt-get git
+sudo apt-get git<br/>
 git clone https://github.com/NationalSecurityAgency/sharkPy<br/>
 sudo apt-get install libpcap-dev<br/>
 sudo apt-get install libglib2.0-dev<br/>
