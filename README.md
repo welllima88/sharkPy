@@ -1,6 +1,8 @@
 
 #SharkPy is
 
+version beta1.0
+
 A python module to dissect, analyze, and interact with network packet data as native Python objects using Wireshark and libpcap capabilities. sharkPy dissect modules extend and otherwise modify Wireshark's tshark. SharkPy packet injection module wraps useful libpcap functionality.<br/>
 
 SharkPy comes with three modules that allows one to explore, create, and/or modify packet data and (re)send data over network. This is all done within python program or interactive python session.<br/>
@@ -96,7 +98,7 @@ Number of child nodes: 17<br/>
 
 \>>> pkt_dict={}<br/>
 
-### Takes a packet dissection tree and index all nodes by their names (abbrev field)<br/> 
+### Take a packet dissection tree and index all nodes by their names (abbrev field)<br/> 
 \>>> sharkPy.collect_proto_ids(sorted_rtn_list[0],pkt_dict)<br/>
 
 ### Here are all the keys used to index this packet dissection<br/>
