@@ -11,7 +11,7 @@ SharkPy comes with three modules that allows one to explore, create, and/or modi
 
 2. sharkPy.wire_dissector -- capture packets from interface and dissect captured packets using Wireshark's dissection libraries. Presents packets to callers as native Python objects.<br/>
 
-3. sharkPy.wire_writer -- write random data to specified network interface using libpcap functionality. Currently, sharkPy users are responsible for correctly building packets that are transmitted using this module's functionality. <br/>
+3. sharkPy.wire_writer -- write arbitrary data to specified network interface using libpcap functionality. Currently, sharkPy users are responsible for correctly building packets that are transmitted using this module's functionality. <br/>
 
 Modules are written such that sharkPy commands are non-blocking. Command results are provided to caller on-demand.
 
