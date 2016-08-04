@@ -418,7 +418,9 @@ class wire_dissector(Process):
             self.create_heirarchy()
                        
             #Pass most recently dissected packet to caller
-            self.sharedQueue.put(self.root_list[-1])
+            pkt=self.root_list[-1]
+            self.sharedQueue.put(pkt)
+            self.root_list.remove(pkt)
             
             #done with this packet
             return
