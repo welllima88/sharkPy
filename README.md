@@ -231,7 +231,8 @@ Transmission Control Protocol<br/>
 \[\<sharkPy.dissect.file_dissector.node object at 0x10fda90>,\<sharkPy.dissect.file_dissector.node object at 0x10fdb10>, \<sharkPy.dissect.file_dissector.node object at 0x10fdbd0>, \<sharkPy.dissect.file_dissector.node object at 0x10fdc90>, \<sharkPy.dissect.file_dissector.node object at 0x10fdd50>, \<sharkPy.dissect.file_dissector.node object at 0x10fddd0>, \<sharkPy.dissect.file_dissector.node object at 0x10fde50>, \<sharkPy.dissect.file_dissector.node object at 0x10fded0>, \<sharkPy.dissect.file_dissector.node object at 0x10fdf90>, \<sharkPy.dissect.file_dissector.node object at 0x1101090>, \<sharkPy.dissect.file_dissector.node object at 0x11016d0>, \<sharkPy.dissect.file_dissector.node object at 0x11017d0>, \<sharkPy.dissect.file_dissector.node object at 0x1101890>, \<sharkPy.dissect.file_dissector.node object at 0x1101990>, \<sharkPy.dissect.file_dissector.node object at 0x1101b50>]<br/>
 
 ### Get useful information about a dissection node's data<br/>
-data_len, first_byte_offset, last_byte_offset, data_string_rep, data_binary_rep=sharkPy.get_node_data_details(pkt)<br/>
+\>>> data_len, first_byte_offset, last_byte_offset, data_string_rep, data_binary_rep=sharkPy.get_node_data_details(pkt)<br/>
+
 \>>> print data_len<br/>
 108<br/>
 
