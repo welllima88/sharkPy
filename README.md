@@ -234,13 +234,13 @@ Transmission Control Protocol<br/>
 \>>> data_len, first_byte_offset, last_byte_offset, data_string_rep, data_binary_rep=sharkPy.get_node_data_details(pkt)<br/>
 
 \>>> print data_len<br/>
-108<br/>
+54<br/>
 
 \>>> print first_byte_offset<br/>
 0<br/>
 
 \>>> print last_byte_offset<br/>
-107<br/>
+53<br/>
 
 \>>> print data_string_rep<br/>
 005056edfe68000c29....<rest edited out><br/>
