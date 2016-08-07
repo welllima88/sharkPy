@@ -68,7 +68,7 @@ setup(name='sharkPy',
       description='Python module to dissect and access network packet data using Wireshark capabilities and native Python objects.',
       ext_modules=[file_dissect_module,wire_write_module],
       author='Mark Landriscina',
-      packages=['sharkPy', 'sharkPy.dissect', 'sharkPy.write'],
+      packages=['sharkPy', 'sharkPy.dissect', 'sharkPy.write', 'sharkPy.utils'],
       package_data={'sharkPy':setupfiles} )
 
 

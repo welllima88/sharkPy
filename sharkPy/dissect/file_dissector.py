@@ -439,7 +439,6 @@ class disopt(object):
     
     wire_opts={NOT_PROMISCUOUS:'-p',
                DECODE_AS:'-d',
-               PKT_CNT:'-c',
                NAME_RESOLUTION:'-n'}
     
     file_opts={DECODE_AS:'-d',
@@ -447,7 +446,6 @@ class disopt(object):
     
     opt_patterns={NOT_PROMISCUOUS:None,
                  DECODE_AS:r'\w+(\.[a-zA-Z]+)*==\d+([-:]\d+)?,\w+',
-                 PKT_CNT:'\d+',
                  NAME_RESOLUTION:None}
             
 def walk_print(a_node):
@@ -568,15 +566,15 @@ def dissect_file(file_path, timeout=10, options=[]):
     
 #TEST main#####TEST main#####TEST maim########TEST main#####TEST main#####TEST main#####TEST maim########TEST main
 if __name__=='__main__':
-        
+    
     in_options=[(disopt.DECODE_AS, r'tcp.port==8888-8890,http'),
                 (disopt.DECODE_AS, r'tcp.port==9999:3,http')]
     
     sorted_rtn_list=dissect_file(r'/home/me/tst.pcapng',timeout=20,options=in_options)
     
-    if(sorted_rtn_list is not None):
-        for each in sorted_rtn_list:
-            walk_print(each)
+    import sharkPy
+    nlist=sharkPy.get_node_by_name(sorted_rtn_list[0], 'ip')
+    print nlist[0]
             
             
             

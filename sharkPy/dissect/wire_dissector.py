@@ -583,9 +583,10 @@ def dissect_wire(interface, options=[], timeout=None):
     
     return (p,exit_event, shared_queue)
 
-def get_next(dissect_process,timeout_secs=None):
+def get_next(dissect_process,timeout=None):
 
     pkt=None
+    timeout_secs=timeout
     shared_queue=dissect_process[2]
 
     try:

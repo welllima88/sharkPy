@@ -39,6 +39,73 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 
 #HOW-TO
 
+## sharkPy API -- examples in following sections
+
+dissect_file(file_path, timeout=10, options=[]): dissect packet capture file and return dissected packets as native python objects<br/>
+    -- file_path: path to capture file<br/>
+    -- timeout: how long to wait (in seconds) before dissection attempt fails<br/>
+    -- options a set of options for file dissection. Options are disopt.DECODE_AS, disopt.NAME_RESOLUTION.<br/>
+    -- RETURNS: List of packet dissections as described below.<br/>
+    
+walk_print(root_node): Starting at root node of dissection tree, print representation of node, then do same for each child recursively.<br/>
+    -- root_node: starting node in dissection tree to starting printing<br/>
+    -- RETURNS None.<br/>
+    
+collect_proto_ids(root_node, pkt_dict): create dictionary representation of packet dissection using the 'abbrev' attribute as key.<br/>
+    -- root_node: starting point in packet dissection tree where operation starts.<br/>
+    -- pkt_dict: An empty dictionary that function will populate.<br/>
+    -- RETURNS None.<br/>
+    
+dissect_wire(interface, options=[], timeout=None): collect packets from interface delivering packet dissections when requested using get_next function.<br/>
+    -- name of interface to capture from.<br/>
+    -- collection and dissection options. Options are disopt.DECODE_AS, disopt.NAME_RESOLUTION, and disopts.NOT_PROMISCUOUS.<br/>
+    -- timeout: amount of time (in seconds) to wait before start capture fails.<br/>
+    -- RETURNS tuple (p, exit_event, shared_queue).<br/>
+        --p: dissection process handle.<br/>
+        --exit_event: event handler used to signal that collection should stop.<br/>
+        --shared_queue: shared queue that dissector returns dissection trees into.<br/>
+        --NOTE: users should not directly interact with these return objects. Instead returned tuple is passed into get_next and close functions as input param.<br/>
+        
+get_next(dissect_process,timeout=None): get next available packet dissection from live capture.<br/>
+    -- dissect_process: tuple returned from dissect_wire.<br/>
+    -- timeout: amount to time to wait (in seconds) before operation timesout.<br/>
+    -- RETURNS root node of packet dissection tree.<br/>
+    
+close(dissect_process): stop and clean up from live capture.<br/>
+    -- dissect_process: tuple returned from dissect_wire.<br/>
+    -- RETURNS None.<br/>
+    -- NOTE: close MUST be called on each capture session.
+    
+wire_writer(write_interface_list): wire_writer contructor. Used to write arbitrary data to interfaces.<br/>
+    -- write_interface_list: list of interface names to write to.<br/>
+    -- RETURNS: wire_writer object.<br/>
+        -- wire_writer.cmd: pass a command to writer.<br/>
+            --wr.cmd(command=wr.WRITE_BYTES, command_data=data_to_write , command_timeout=2)<br/>
+            --wr.cmd(command=wr.SHUT_DOWN_ALL,command_data=None,command_data=2)<br/>
+            --wr.cmd(command=wr.SHUT_DOWN_NAMED, command_data=interface_name, command_data=2)<br/>
+        -- wire_writer.get_rst(timeout=1): returns tuple (success/failure, number_of_bytes_written)<br/>
+
+do_funct_walk(root_node, funct, aux=None): recursively pass each node in dissection tree (and aux) to function. Depth first walk.<br/>
+    -- root_node: node in dissection tree that will be the first to be passed to function.<br/>
+    -- funct: function to call.<br/>
+    -- aux: optional auxilliary variable that will be passed in as parameter as part of each function call.<br/>
+    -- RETURNS None.<br/>
+    
+ get_node_by_name(root_node, name): finds and returns a list of dissection nodes in dissection tree with a given name (i.e., 'abbrev').<br/>
+     -- root_node: root of dissection tree being passed into function.<br/>
+     -- name: Name of node used as match key. Matches again 'abbrev' attribute.<br/>
+     -- RETURNS: a list of nodes in dissection tree with 'abbrev' attribute that matches name. NOTE: abbrev attribute is not necessarily unique in a given dissection. tree. This is the reason that this function returns a LIST of matching nodes.<br/>
+     
+get_node_data_details(node): Returns a tuple of values that describe the data in a given dissection node.<br/>
+    -- node: node that will have its details provided.<br/>
+    -- RETURNS: returns tuple, (data_len,first_byte_index, last_byte_index, data, binary_data).<br/>
+        -- data_len: number of bytes in node's data.<br/>
+        -- first_byte_index: byte offset from start of packet where this node's data starts.<br/>
+        -- last_byte_index: byte offset from start of packet where this node's data ends.<br/>
+        -- data: string representation of node data.<br/>
+        -- binary_data: binary representation of node data.<br/>
+    
+
 ##DISSECT PACKETS IN A CAPTURE FILE
 
 \>>> import sharkPy<br/>
@@ -145,6 +212,9 @@ Number of child nodes: 15<br/>
  tcp.window_size_scalefactor<br/>
  tcp.checksum<br/>
  tcp.urgent_pointer<br/>
+ 
+### Short-cut for finding a node by name:<br/>
+val_list=sharkPy.get_node_by_name(sorted_rtn_list[0], 'ip')<br/>
 
 ### Each node in a packet dissection tree has attributes and a child node list.<br/>
 \>>> pkt = val_list[0]<br/>
@@ -159,6 +229,24 @@ Transmission Control Protocol<br/>
 ### Here's the pkt's child list<br/>
 \>>> print pkt.children<br/>
 \[\<sharkPy.dissect.file_dissector.node object at 0x10fda90>,\<sharkPy.dissect.file_dissector.node object at 0x10fdb10>, \<sharkPy.dissect.file_dissector.node object at 0x10fdbd0>, \<sharkPy.dissect.file_dissector.node object at 0x10fdc90>, \<sharkPy.dissect.file_dissector.node object at 0x10fdd50>, \<sharkPy.dissect.file_dissector.node object at 0x10fddd0>, \<sharkPy.dissect.file_dissector.node object at 0x10fde50>, \<sharkPy.dissect.file_dissector.node object at 0x10fded0>, \<sharkPy.dissect.file_dissector.node object at 0x10fdf90>, \<sharkPy.dissect.file_dissector.node object at 0x1101090>, \<sharkPy.dissect.file_dissector.node object at 0x11016d0>, \<sharkPy.dissect.file_dissector.node object at 0x11017d0>, \<sharkPy.dissect.file_dissector.node object at 0x1101890>, \<sharkPy.dissect.file_dissector.node object at 0x1101990>, \<sharkPy.dissect.file_dissector.node object at 0x1101b50>]<br/>
+
+### Get useful information about a dissection node's data<br/>
+data_len, first_byte_offset, last_byte_offset, data_string_rep, data_binary_rep=sharkPy.get_node_data_details(pkt)<br/>
+\>>> print data_len<br/>
+108<br/>
+
+\>>> print first_byte_offset<br/>
+0<br/>
+
+\>>> print last_byte_offset<br/>
+107<br/>
+
+\>>> print data_string_rep<br/>
+005056edfe68000c29....<rest edited out><br/>
+
+\>>> print binary_string_rep<br/>
+<prints binary spleg, edited out><br/>
+
 
 ## CAPTURE PACKETS FROM NETWORK AND DISSECT THEM
 
