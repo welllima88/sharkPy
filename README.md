@@ -214,7 +214,7 @@ Number of child nodes: 15<br/>
  tcp.urgent_pointer<br/>
  
 ### Short-cut for finding a node by name:<br/>
-val_list=sharkPy.get_node_by_name(sorted_rtn_list[0], 'ip')<br/>
+\>>> val_list=sharkPy.get_node_by_name(sorted_rtn_list[0], 'ip')<br/>
 
 ### Each node in a packet dissection tree has attributes and a child node list.<br/>
 \>>> pkt = val_list[0]<br/>
