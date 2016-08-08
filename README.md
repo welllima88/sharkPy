@@ -41,22 +41,22 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 
 ## sharkPy API -- examples in following sections
 
-<b>dissect_file(file_path, timeout=10, options=[]):<b/> dissect packet capture file and return dissected packets as native python objects<br/>
+<b>dissect_file(file_path, timeout=10, options=[]):</b> dissect packet capture file and return dissected packets as native python objects<br/>
     -- file_path: path to capture file<br/>
     -- timeout: how long to wait (in seconds) before dissection attempt fails<br/>
     -- options a set of options for file dissection. Options are disopt.DECODE_AS, disopt.NAME_RESOLUTION.<br/>
     -- RETURNS: List of packet dissections as described below.<br/>
     
-walk_print(root_node): Starting at root node of dissection tree, print representation of node, then do same for each child recursively.<br/>
+<b>walk_print(root_node):</b> Starting at root node of dissection tree, print representation of node, then do same for each child recursively.<br/>
     -- root_node: starting node in dissection tree to starting printing<br/>
     -- RETURNS None.<br/>
     
-collect_proto_ids(root_node, pkt_dict): create dictionary representation of packet dissection using the 'abbrev' attribute as key.<br/>
+<b>collect_proto_ids(root_node, pkt_dict):</b> create dictionary representation of packet dissection using the 'abbrev' attribute as key.<br/>
     -- root_node: starting point in packet dissection tree where operation starts.<br/>
     -- pkt_dict: An empty dictionary that function will populate.<br/>
     -- RETURNS None.<br/>
     
-dissect_wire(interface, options=[], timeout=None): collect packets from interface delivering packet dissections when requested using get_next function.<br/>
+<b>dissect_wire(interface, options=[], timeout=None):</b> collect packets from interface delivering packet dissections when requested using get_next function.<br/>
     -- name of interface to capture from.<br/>
     -- collection and dissection options. Options are disopt.DECODE_AS, disopt.NAME_RESOLUTION, and disopts.NOT_PROMISCUOUS.<br/>
     -- timeout: amount of time (in seconds) to wait before start capture fails.<br/>
@@ -66,17 +66,17 @@ dissect_wire(interface, options=[], timeout=None): collect packets from interfac
         --shared_queue: shared queue that dissector returns dissection trees into.<br/>
         --NOTE: users should not directly interact with these return objects. Instead returned tuple is passed into get_next and close functions as input param.<br/>
         
-get_next(dissect_process,timeout=None): get next available packet dissection from live capture.<br/>
+<b>get_next(dissect_process,timeout=None):</b> get next available packet dissection from live capture.<br/>
     -- dissect_process: tuple returned from dissect_wire.<br/>
     -- timeout: amount to time to wait (in seconds) before operation timesout.<br/>
     -- RETURNS root node of packet dissection tree.<br/>
     
-close(dissect_process): stop and clean up from live capture.<br/>
+<b>close(dissect_process):</b> stop and clean up from live capture.<br/>
     -- dissect_process: tuple returned from dissect_wire.<br/>
     -- RETURNS None.<br/>
     -- NOTE: close MUST be called on each capture session.
     
-wire_writer(write_interface_list): wire_writer contructor. Used to write arbitrary data to interfaces.<br/>
+<b>wire_writer(write_interface_list):</b> wire_writer contructor. Used to write arbitrary data to interfaces.<br/>
     -- write_interface_list: list of interface names to write to.<br/>
     -- RETURNS: wire_writer object.<br/>
         -- wire_writer.cmd: pass a command to writer.<br/>
@@ -85,18 +85,18 @@ wire_writer(write_interface_list): wire_writer contructor. Used to write arbitra
             --wr.cmd(command=wr.SHUT_DOWN_NAMED, command_data=interface_name, command_data=2)<br/>
         -- wire_writer.get_rst(timeout=1): returns tuple (success/failure, number_of_bytes_written)<br/>
 
-do_funct_walk(root_node, funct, aux=None): recursively pass each node in dissection tree (and aux) to function. Depth first walk.<br/>
+<b>do_funct_walk(root_node, funct, aux=None):</b> recursively pass each node in dissection tree (and aux) to function. Depth first walk.<br/>
     -- root_node: node in dissection tree that will be the first to be passed to function.<br/>
     -- funct: function to call.<br/>
     -- aux: optional auxilliary variable that will be passed in as parameter as part of each function call.<br/>
     -- RETURNS None.<br/>
     
- get_node_by_name(root_node, name): finds and returns a list of dissection nodes in dissection tree with a given name (i.e., 'abbrev').<br/>
+<b>get_node_by_name(root_node, name):</b> finds and returns a list of dissection nodes in dissection tree with a given name (i.e., 'abbrev').<br/>
      -- root_node: root of dissection tree being passed into function.<br/>
      -- name: Name of node used as match key. Matches again 'abbrev' attribute.<br/>
      -- RETURNS: a list of nodes in dissection tree with 'abbrev' attribute that matches name. NOTE: abbrev attribute is not necessarily unique in a given dissection. tree. This is the reason that this function returns a LIST of matching nodes.<br/>
      
-get_node_data_details(node): Returns a tuple of values that describe the data in a given dissection node.<br/>
+<b>get_node_data_details(node):</b> Returns a tuple of values that describe the data in a given dissection node.<br/>
     -- node: node that will have its details provided.<br/>
     -- RETURNS: returns tuple, (data_len,first_byte_index, last_byte_index, data, binary_data).<br/>
         -- data_len: number of bytes in node's data.<br/>
