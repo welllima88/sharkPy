@@ -41,7 +41,7 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 
 ## sharkPy API -- examples in following sections
 
-dissect_file(file_path, timeout=10, options=[]): dissect packet capture file and return dissected packets as native python objects<br/>
+<b>dissect_file(file_path, timeout=10, options=[]):<b/> dissect packet capture file and return dissected packets as native python objects<br/>
     -- file_path: path to capture file<br/>
     -- timeout: how long to wait (in seconds) before dissection attempt fails<br/>
     -- options a set of options for file dissection. Options are disopt.DECODE_AS, disopt.NAME_RESOLUTION.<br/>
