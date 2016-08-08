@@ -1,6 +1,8 @@
 
 #INSTALL
 
+Should install/run on most linux distros as long as Wireshark version 2.0.1 or newer is installed and the following steps (or equivalent) are successful.<br/>
+
 ## ubuntu-16.04-desktop-amd64 -- clean install
 sudo apt-get git<br/>
 git clone https://github.com/NationalSecurityAgency/sharkPy<br/>
