@@ -243,10 +243,10 @@ Transmission Control Protocol<br/>
 53<br/>
 
 \>>> print data_string_rep<br/>
-005056edfe68000c29....<rest edited out><br/>
+005056edfe68000c29....\<rest edited out><br/>
 
 \>>> print binary_string_rep<br/>
-<prints binary spleg, edited out><br/>
+\<prints binary spleg, edited out><br/>
 
 
 ## CAPTURE PACKETS FROM NETWORK AND DISSECT THEM
