@@ -9,7 +9,7 @@ git clone https://github.com/NationalSecurityAgency/sharkPy<br/>
 sudo apt-get install libpcap-dev<br/>
 sudo apt-get install libglib2.0-dev<br/>
 sudo apt-get install libpython-dev<br/>
-sudo apt-get install wireshark-dev       #if you didn't build/install wireshark (be sure wireshark libs are in LD_LIBRARY_PATH)
-sudo apt-get install wireshark<br/>      #if you didn't build/install wireshark (be sure wireshark libs are in LD_LIBRARY_PATH)
+sudo apt-get install wireshark-dev       #if you didn't build/install wireshark (be sure wireshark libs are in LD_LIBRARY_PATH)<br/>
+sudo apt-get install wireshark           #if you didn't build/install wireshark (be sure wireshark libs are in LD_LIBRARY_PATH)<br/>
 cd sharkPy<br/>
 sudo ./setup install<br/>
