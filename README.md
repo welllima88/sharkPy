@@ -3,15 +3,19 @@
 
 Current version: beta 0.1
 
-A python module to dissect, analyze, and interact with network packet data as native Python objects using Wireshark and libpcap capabilities. sharkPy dissect modules extend and otherwise modify Wireshark's tshark. SharkPy packet injection module wraps useful libpcap functionality.<br/>
+A python module to dissect, analyze, and interact with network packet data as native Python objects using Wireshark and libpcap capabilities. sharkPy dissect modules extend and otherwise modify Wireshark's tshark. SharkPy packet injection and pcap file writing modules wrap useful libpcap functionality.<br/>
 
-SharkPy comes with three modules that allows one to explore, create, and/or modify packet data and (re)send data over network. This is all done within python program or interactive python session.<br/>
+SharkPy comes with five modules that allows one to explore, create, and/or modify packet data and (re)send data over network, and write (possibly modified) packets to a new pcap output file. This is all done within python program or interactive python session.<br/>
 
 1. sharkPy.file_dissector -- dissect capture file packets using Wireshark's dissection libraries and present detailed packet dissections to caller as native Python objects.<br/>
 
 2. sharkPy.wire_dissector -- capture packets from interface and dissect captured packets using Wireshark's dissection libraries. Presents packets to callers as native Python objects.<br/>
 
-3. sharkPy.wire_writer -- write arbitrary data to specified network interface using libpcap functionality. Currently, sharkPy users are responsible for correctly building packets that are transmitted using this module's functionality. <br/>
+3. sharkPy.file_writer -- write (possibly modified) packets to a new output pcap file. For example, one can dissect packet capture file using sharkPy.file_dissector, create new packets based on the packets in the dissected file, and then write new/modified packets to an output pcap file.  
+
+4. sharkPy.wire_writer -- write arbitrary data (e.g. modified packets) to specified network interface using libpcap functionality. Currently, sharkPy users are responsible for correctly building packets that are transmitted using this module's functionality. <br/>
+
+5. sharkPy.utils -- a set of utility functions
 
 Modules are written such that sharkPy commands are non-blocking. Command results are provided to caller on-demand.
 
@@ -104,7 +108,29 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
         -- last_byte_index: byte offset from start of packet where this node's data ends.<br/>
         -- data: string representation of node data.<br/>
         -- binary_data: binary representation of node data.<br/>
-    
+        
+<b>get_pkt_times(pkt=input_packet):</b> Returns tuple containing packet timestamp information.<br/>
+    --pkt: packet dissection tree returned from one of sharkPy's dissection routines.
+    --RETURNS: The tuple (epoch_time_seconds, epoch_time_nanosecond_remainder). These two values are required for file_writer's pcap_write_packet() function.<br/>
+        
+<b>file_writer():</b> Creates a new file_writer object to write packets to an output pcap file.<br/>
+    --make_pcap_error_buffer(): Creates a correctly sized and initialized error buffer. <br/>
+        --Returns error buffer.<br/>
+    --pcap_write_file(output_file_path, error_buffer): create and open new pcap output file.<br/>
+        --output_file_path: path for newly created file.<br/>
+        --err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer. <br/>
+        --Returns: ctypes.c_void_p, which is a context object required for other write related functions.<br/>
+    --pcap_write_packet(context, upper_time_val, lower_time_val, num_bytes_to_write, data_to_write, error_buffer): writes packets to opened pcap output file.<br/>
+        --context: object returned by pcap_write_file().<br/>
+        --upper_time_val: packet epoch time in seconds. Can be first value in tuple returned from utility function get_pkt_times().<br/>
+        --lower_time_val: packet epoch time nano seconds remainder. Can be second value in tuple returned from utility function get_pkt_times().<br/>
+        --num_bytes_to_write: number of bytes to write to file, size of data buffer.<br/>
+        --data_to_write: buffer of data to write.<br/>
+        --err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer.<br/>
+        --RETURNS 0 on success, -1 on failure. Error message will be available in err_buffer.<br/>
+    --pcap_close(context) -- MUST be called to flush write buffer, close write file, and free allocated resources.<br/>
+        --context: object returned by pcap_write_file().<br/>
+        --RETURNS: None.<br/>
 
 ##DISSECT PACKETS IN A CAPTURE FILE
 
@@ -266,7 +292,7 @@ Transmission Control Protocol<br/>
 ### Must always close capture sessions<br/>
 \>>> sharkPy.close(dissection)<br/>
 
-## WRITE DATA TO NETWORK
+## WRITE DATA (packets) TO NETWORK
 
 ### Create writer object using interface name<br/>
 \>>> wr=sharkPy.wire_writer(['eno16777736'])<br/>
@@ -279,4 +305,34 @@ Transmission Control Protocol<br/>
 ...     print wr.get_rst(1)<br/>
 ... <br/>
 (0, 26) ### returned success and wrote 26 bytes. ###<br/>
+
+## WRITE PACKETS TO OUTPUT PCAP FILE
+
+### Create file writer object<br/>
+\>>> fw=file_writer()<br/>
+
+### Create error buffer<br/>
+\>>> errbuf=fw.make_pcap_error_buffer()<br/>
+
+### Open/create new output pcap file into which packets will be written<br/>
+\>>> outfile=fw.pcap_write_file(r'/home/me/test_output_file.pcap', errbuf)<br/>
+
+### Dissect packets in an existing packet capture file.<br/>
+\>>> sorted_rtn_list=sharkPy.dissect_file(r'/home/me/tst.pcap',timeout=20)<br/>
+
+### Write first packet into output pcap file.<br/>
+
+#### Get first packet dissection<br/>
+\>>>pkt_dissection=sorted_rtn_list[0]<br/>
+
+#### Acquire packet information require for write operation
+\>>>pkt_frame = sharkPy.get_node_by_name(pkt_dissection, 'frame')<br/>
+\>>>frame_data_length, first_frame_byte_index, list_frame_byte_index, frame_data_as_string, frame_data_as_binary = sharkPy.get_node_data_details(pkt_frame[0])<br/>
+\>>>utime, ltime = sharkPy.get_pkt_times(pkt_dissection)<br/>
+
+#### Write packet into output file<br/>
+\>>>fw.pcap_write_packet(outfile, utime,ltime,frame_data_length,frame_data_as_binary,errbuf)<br/>
+
+### Close output file and clean-up<br/>
+\>>> fw.pcap_close(outfile)<br/>
 
