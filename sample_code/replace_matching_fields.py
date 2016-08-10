@@ -16,7 +16,7 @@ for pkt in sorted_rtn_list:
     new_str_data= sharkPy.find_replace_data(pkt, r'ip.dst', test_value2, r'02020202')
     new_str_data= sharkPy.find_replace_data(pkt, r'eth.src', test_value3, r'005050505050')
     
-    #get detains required to write to output pcap file
+    #get details required to write to output pcap file
     pkt_frame = sharkPy.get_node_by_name(pkt, 'frame')
     fdl, ffb, flb, fd, fbd = sharkPy.get_node_data_details(pkt_frame[0])
     utime, ltime = sharkPy.get_pkt_times(pkt)
