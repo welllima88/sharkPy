@@ -28,6 +28,12 @@
 
 #include "write.h"
 
+struct pcap_pkhdr_t{
+	struct timeval ts;
+	unsigned int caplen;
+	unsigned int len;
+};
+
 typedef struct {
     unsigned int flags;
     const char *description;
@@ -256,6 +262,109 @@ fail:
     }
 
     return rtn;
+}
+
+/*
+ * Create/open new pcap output file
+ */
+dumpfile *
+pcap_write_file(const char *in_file_path, char *errbuf)
+{
+	pcap_dumper_t *rtn_dump = NULL;
+	dumpfile *dumpobjs = NULL;
+	pcap_t *pd = NULL;
+    char *errmsg=NULL;
+
+    if(NULL == in_file_path)
+    {
+    	errmsg = "Error. NULL input parameter.";
+    	goto fail;
+    }
+
+	if(NULL == (pd=pcap_open_dead_with_tstamp_precision(DLT_EN10MB, 65535, PCAP_TSTAMP_PRECISION_NANO)))
+	{
+		errmsg="pcap_open_dead() failed.";
+        goto fail;
+	}
+
+    if( NULL == (rtn_dump=pcap_dump_open(pd, in_file_path)))
+    {
+		errmsg="pcap_dump_open() failed.";
+        goto fail;
+    }
+
+    if (NULL == (dumpobjs = calloc(1,sizeof(dumpfile))))
+    {
+		errmsg="memory allocation for dump objects failed.";
+        goto fail;
+    }
+
+    dumpobjs->dumper=rtn_dump;
+    dumpobjs->pd = pd;
+
+fail:
+    if(NULL == rtn_dump && NULL != pd)
+    {
+    	pcap_close(pd);
+    }
+
+	if( NULL == rtn_dump && NULL != errbuf )
+	{
+		memset(errbuf, '\0', PCAP_ERRBUF_SIZE);
+		memcpy(errbuf, errmsg, strnlen(errmsg, PCAP_ERRBUF_SIZE-1));
+	}
+    return dumpobjs;
+}
+
+int
+pcap_write_packet(dumpfile *dumpobjs,
+		          long epoch_seconds,
+				  int epoch_remainder,
+				  unsigned int datalen,
+				  unsigned char *pktdata,
+				  char *errbuf)
+{
+	int rtn = 0;
+    struct pcap_pkhdr_t phdr = {{epoch_seconds, epoch_remainder}, 0, 0};
+    char *errmsg=NULL;
+    pcap_dumper_t *dumper = NULL;
+
+    if(NULL == dumpobjs || NULL == pktdata)
+    {
+    	errmsg = "Error. NULL input parameter.";
+    	rtn = -1;
+    	goto fail;
+    }
+
+    dumper = dumpobjs->dumper;
+    phdr.caplen=datalen;
+    phdr.len=datalen;
+
+    pcap_dump((unsigned char *)dumper,(const struct pcap_pkthdr *)&phdr,pktdata);
+
+fail:
+	if( rtn <0 && NULL != errbuf )
+	{
+		memset(errbuf, '\0', PCAP_ERRBUF_SIZE);
+		memcpy(errbuf, errmsg, strnlen(errmsg, PCAP_ERRBUF_SIZE-1));
+	}
+    return rtn;
+}
+
+void
+close_pcap_dump(dumpfile *dumpobjs)
+{
+	if(NULL == dumpobjs          ||
+	   NULL == dumpobjs->pd      ||
+	   NULL == dumpobjs->dumper)
+	{
+		goto fail;
+	}
+    pcap_close(dumpobjs->pd);
+    free(dumpobjs);
+
+fail:
+    ;
 }
 
 /*

@@ -42,6 +42,11 @@
 
 #define MAX_DATALINK_DESC 2048
 
+typedef struct {
+	pcap_dumper_t *dumper;
+	pcap_t *pd;
+}dumpfile;
+
 typedef void (*export_interface)(void *ifc_2_cpy);
 export_interface save_interface_info;
 
@@ -67,6 +72,17 @@ getNumberOfInterfaces(char *error);
  */
 int
 getInterfaceInfoList(char *errbuf);
+
+dumpfile *
+pcap_write_file(const char *in_file_path, char *errbuf);
+
+int
+pcap_write_packet(dumpfile *dumpobjs,
+		          long epoch_seconds,
+				  int epoch_remainder,
+				  unsigned int datalen,
+				  unsigned char *pktdata,
+				  char *errbuf);
 
 #endif /* SHARKPY_WRITE_H_ */
 

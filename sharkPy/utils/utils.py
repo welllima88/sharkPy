@@ -30,6 +30,27 @@ def get_node_by_name(root_node, name):
         raise AttributeError(str(name)+" not found.")
     
     return ndict[name]
+
+def get_pkt_times(pkt):
+    
+    tnode=None
+    tvals=[]
+    
+    try:
+        tnode=get_node_by_name(pkt, 'frame.time_epoch')
+    except Exception as e:
+        print str(e)
+        
+    time_representation=tnode[0].attributes.fvalue
+    tvals=time_representation.split('.')
+    
+    if(len(tvals) != 2):
+        raise RuntimeError("malformed frame time value.")
+    
+    upper=int(tvals[0])
+    lower=int(tvals[1])
+    
+    return ((upper,lower))
     
 #returns tuple as follows: 
 #node data length

@@ -570,11 +570,10 @@ if __name__=='__main__':
     in_options=[(disopt.DECODE_AS, r'tcp.port==8888-8890,http'),
                 (disopt.DECODE_AS, r'tcp.port==9999:3,http')]
     
-    sorted_rtn_list=dissect_file(r'/home/me/tst.pcapng',timeout=20,options=in_options)
+    sorted_rtn_list=dissect_file(r'/home/me/tst.pcapng',timeout=20)
     
-    import sharkPy
-    nlist=sharkPy.get_node_by_name(sorted_rtn_list[0], 'ip')
-    print nlist[0]
+    for pkt in sorted_rtn_list:
+        walk_print(pkt)
             
             
             
