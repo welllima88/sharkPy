@@ -17,8 +17,6 @@ SharkPy comes with five modules that allows one to explore, create, and/or modif
 
 5. sharkPy.utils -- a set of utility functions
 
-Modules are written such that sharkPy commands are non-blocking. Command results are provided to caller on-demand.
-
 ##Design Goals
 
 1. Deliver dissected packet data to callers as native python objects.<br/>
