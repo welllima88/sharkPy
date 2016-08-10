@@ -114,13 +114,13 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
     --RETURNS: The tuple (epoch_time_seconds, epoch_time_nanosecond_remainder). These two values are required for file_writer's pcap_write_packet() function.<br/>
         
 <b>file_writer():</b> Creates a new file_writer object to write packets to an output pcap file.<br/>
-    --make_pcap_error_buffer(): Creates a correctly sized and initialized error buffer. <br/>
+    --<b>make_pcap_error_buffer():</b> Creates a correctly sized and initialized error buffer. <br/>
         --Returns error buffer.<br/>
-    --pcap_write_file(output_file_path, error_buffer): create and open new pcap output file.<br/>
+    --<b>pcap_write_file(output_file_path, error_buffer):</b> create and open new pcap output file.<br/>
         --output_file_path: path for newly created file.<br/>
         --err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer. <br/>
         --Returns: ctypes.c_void_p, which is a context object required for other write related functions.<br/>
-    --pcap_write_packet(context, upper_time_val, lower_time_val, num_bytes_to_write, data_to_write, error_buffer): writes packets to opened pcap output file.<br/>
+    --<b>pcap_write_packet(context, upper_time_val, lower_time_val, num_bytes_to_write, data_to_write, error_buffer):</b> writes packets to opened pcap output file.<br/>
         --context: object returned by pcap_write_file().<br/>
         --upper_time_val: packet epoch time in seconds. Can be first value in tuple returned from utility function get_pkt_times().<br/>
         --lower_time_val: packet epoch time nano seconds remainder. Can be second value in tuple returned from utility function get_pkt_times().<br/>
@@ -128,7 +128,7 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
         --data_to_write: buffer of data to write.<br/>
         --err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer.<br/>
         --RETURNS 0 on success, -1 on failure. Error message will be available in err_buffer.<br/>
-    --pcap_close(context) -- MUST be called to flush write buffer, close write file, and free allocated resources.<br/>
+    --<b>pcap_close(context):</b> MUST be called to flush write buffer, close write file, and free allocated resources.<br/>
         --context: object returned by pcap_write_file().<br/>
         --RETURNS: None.<br/>
 
@@ -325,7 +325,7 @@ Transmission Control Protocol<br/>
 #### Get first packet dissection<br/>
 \>>>pkt_dissection=sorted_rtn_list[0]<br/>
 
-#### Acquire packet information require for write operation
+#### Acquire packet information required for write operation
 \>>>pkt_frame = sharkPy.get_node_by_name(pkt_dissection, 'frame')<br/>
 \>>>frame_data_length, first_frame_byte_index, list_frame_byte_index, frame_data_as_string, frame_data_as_binary = sharkPy.get_node_data_details(pkt_frame[0])<br/>
 \>>>utime, ltime = sharkPy.get_pkt_times(pkt_dissection)<br/>
