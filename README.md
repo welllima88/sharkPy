@@ -43,6 +43,7 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 
 ## sharkPy API -- examples in following sections
 
+###Disecting packets from wire or from file
 <b>dissect_file(file_path, timeout=10, options=[]):</b> dissect packet capture file and return dissected packets as native python objects<br/>
     -- file_path: path to capture file<br/>
     -- timeout: how long to wait (in seconds) before dissection attempt fails<br/>
@@ -77,7 +78,8 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
     -- dissect_process: tuple returned from dissect_wire.<br/>
     -- RETURNS None.<br/>
     -- NOTE: close MUST be called on each capture session.
-    
+
+### Writing data/packets on wire or to file
 <b>wire_writer(write_interface_list):</b> wire_writer contructor. Used to write arbitrary data to interfaces.<br/>
     -- write_interface_list: list of interface names to write to.<br/>
     -- RETURNS: wire_writer object.<br/>
@@ -86,7 +88,27 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
             --wr.cmd(command=wr.SHUT_DOWN_ALL,command_data=None,command_data=2)<br/>
             --wr.cmd(command=wr.SHUT_DOWN_NAMED, command_data=interface_name, command_data=2)<br/>
         -- wire_writer.get_rst(timeout=1): returns tuple (success/failure, number_of_bytes_written)<br/>
-
+        
+<b>file_writer():</b> Creates a new file_writer object to write packets to an output pcap file.<br/>
+    --<b>make_pcap_error_buffer():</b> Creates a correctly sized and initialized error buffer. <br/>
+        --Returns error buffer.<br/>
+    --<b>pcap_write_file(output_file_path, error_buffer):</b> create and open new pcap output file.<br/>
+        --output_file_path: path for newly created file.<br/>
+        --err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer. <br/>
+        --Returns: ctypes.c_void_p, which is a context object required for other write related functions.<br/>
+    --<b>pcap_write_packet(context, upper_time_val, lower_time_val, num_bytes_to_write, data_to_write, error_buffer):</b> writes packets to opened pcap output file.<br/>
+        --context: object returned by pcap_write_file().<br/>
+        --upper_time_val: packet epoch time in seconds. Can be first value in tuple returned from utility function get_pkt_times().<br/>
+        --lower_time_val: packet epoch time nano seconds remainder. Can be second value in tuple returned from utility function get_pkt_times().<br/>
+        --num_bytes_to_write: number of bytes to write to file, size of data buffer.<br/>
+        --data_to_write: buffer of data to write.<br/>
+        --err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer.<br/>
+        --RETURNS 0 on success, -1 on failure. Error message will be available in err_buffer.<br/>
+    --<b>pcap_close(context):</b> MUST be called to flush write buffer, close write file, and free allocated resources.<br/>
+        --context: object returned by pcap_write_file().<br/>
+        --RETURNS: None.<br/>
+        
+### Utility functions
 <b>do_funct_walk(root_node, funct, aux=None):</b> recursively pass each node in dissection tree (and aux) to function. Depth first walk.<br/>
     -- root_node: node in dissection tree that will be the first to be passed to function.<br/>
     -- funct: function to call.<br/>
@@ -108,27 +130,31 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
         -- binary_data: binary representation of node data.<br/>
         
 <b>get_pkt_times(pkt=input_packet):</b> Returns tuple containing packet timestamp information.<br/>
-    --pkt: packet dissection tree returned from one of sharkPy's dissection routines.
-    --RETURNS: The tuple (epoch_time_seconds, epoch_time_nanosecond_remainder). These two values are required for file_writer's pcap_write_packet() function.<br/>
-        
-<b>file_writer():</b> Creates a new file_writer object to write packets to an output pcap file.<br/>
-    --<b>make_pcap_error_buffer():</b> Creates a correctly sized and initialized error buffer. <br/>
-        --Returns error buffer.<br/>
-    --<b>pcap_write_file(output_file_path, error_buffer):</b> create and open new pcap output file.<br/>
-        --output_file_path: path for newly created file.<br/>
-        --err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer. <br/>
-        --Returns: ctypes.c_void_p, which is a context object required for other write related functions.<br/>
-    --<b>pcap_write_packet(context, upper_time_val, lower_time_val, num_bytes_to_write, data_to_write, error_buffer):</b> writes packets to opened pcap output file.<br/>
-        --context: object returned by pcap_write_file().<br/>
-        --upper_time_val: packet epoch time in seconds. Can be first value in tuple returned from utility function get_pkt_times().<br/>
-        --lower_time_val: packet epoch time nano seconds remainder. Can be second value in tuple returned from utility function get_pkt_times().<br/>
-        --num_bytes_to_write: number of bytes to write to file, size of data buffer.<br/>
-        --data_to_write: buffer of data to write.<br/>
-        --err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer.<br/>
-        --RETURNS 0 on success, -1 on failure. Error message will be available in err_buffer.<br/>
-    --<b>pcap_close(context):</b> MUST be called to flush write buffer, close write file, and free allocated resources.<br/>
-        --context: object returned by pcap_write_file().<br/>
-        --RETURNS: None.<br/>
+    --pkt: packet dissection tree returned from one of sharkPy's dissection routines.<br/>
+    --RETURNS: The tuple (epoch_time_seconds, epoch_time_nanosecond_remainder). These two values are required for file_writer's <br/>
+    
+<b>find_replace_data(pkt, field_name, test_val, replace_with=None, condition_funct=condition_data_equals, enforce_bounds=True, quiet=True):</b> A general search, match, and replace data in packets.<br/>
+    -- pkt: packet dissection tree returned from one of sharkPy's dissection routines.<br/>
+    -- field_name: the 'abbrev' field name that will have its data modified/replaced.<br/>
+    -- test_val: data_val/buffer that will be used for comparison in matching function.<br/>
+    -- replace_with: data that will replace the data in matching dissection fields.<br/>
+    -- condition_funct: A function that returns True or False and has the prototype, condition_funct(node_val, test_val, pkt_dissection_tree). Default is the condition_data_equals() function that returns True if node_val == test_val. This is a literal byte for byte matching.<br/>
+    --enforce_bounds: If true, enforces condition that len(replace_with) == len(node_data_to_be_replaced). Good idea to keep this set to its default, which is True.<br/>
+    --quiet: If set to False, will print error msg to stdout if the target field 'abbrev' name cannot be found in packet dissection tree.<br/>
+    --RETURNS: new packet data represented as a hex string or None if target field is not in packet.<br/>
+    
+<b>condition_data_equals(node_val, test_val, pkt_dissection_tree=None):</b> A matching function that can be passed to find_replace_data().<br/>
+    -- node_val: value from the dissected packet that is being checked
+    -- test_val: value that node_val will be compared to.
+    -- pkt_dissection_tree: entire packet dissection tree. Not used in this comparison.
+    -- RETURNS True is a byte for byte comparison reveals that node_val == test_val. Otherwise, returns False.
+    
+<b>condition_always_true(node_val=None, test_val=None, pkt_dissection_tree=None):</b> A matching function that can be passed to find_replace_data().<br/>
+    -- node_val: Not used in this comparison<br/>
+    -- test_val: Not used in this comparison<br/>
+    -- pkt_dissection_tree: entire packet dissection tree. Not used in this comparison.<br/>
+    -- RETURNS True ALWAYS. Useful of the only matching criteria is that the target field exists in packet dissection.<br/>
+
 
 ##DISSECT PACKETS IN A CAPTURE FILE
 
@@ -325,7 +351,7 @@ Transmission Control Protocol<br/>
 
 #### Acquire packet information required for write operation
 \>>>pkt_frame = sharkPy.get_node_by_name(pkt_dissection, 'frame')<br/>
-\>>>frame_data_length, first_frame_byte_index, list_frame_byte_index, frame_data_as_string, frame_data_as_binary = sharkPy.get_node_data_details(pkt_frame[0])<br/>
+\>>>frame_data_length, first_frame_byte_index, last_frame_byte_index, frame_data_as_string, frame_data_as_binary = sharkPy.get_node_data_details(pkt_frame[0])<br/>
 \>>>utime, ltime = sharkPy.get_pkt_times(pkt_dissection)<br/>
 
 #### Write packet into output file<br/>
@@ -333,4 +359,36 @@ Transmission Control Protocol<br/>
 
 ### Close output file and clean-up<br/>
 \>>> fw.pcap_close(outfile)<br/>
+
+## MATCH AND REPLACE BEFORE WRITING NEW PACKETS TO OUTPUT PCAP FILE
+import sharkPy, binascii
+
+test_value1=r'0xc0a84f01'
+test_value2=r'c0a84fff'
+test_value3=r'005056c00008'
+
+fw=sharkPy.file_writer()
+errbuf=fw.make_pcap_error_buffer()
+outfile=fw.pcap_write_file(r'/home/me/test_output_file.pcap', errbuf)
+sorted_rtn_list=sharkPy.dissect_file(r'/home/me/tst.pcap',timeout=20)
+
+for pkt in sorted_rtn_list:
+
+    #do replacement
+    new_str_data= sharkPy.find_replace_data(pkt, r'ip.src', test_value1, r'01010101')
+    new_str_data= sharkPy.find_replace_data(pkt, r'ip.dst', test_value2, r'02020202')
+    new_str_data= sharkPy.find_replace_data(pkt, r'eth.src', test_value3, r'005050505050')
+    
+    #get detains required to write to output pcap file
+    pkt_frame = sharkPy.get_node_by_name(pkt, 'frame')
+    fdl, ffb, flb, fd, fbd = sharkPy.get_node_data_details(pkt_frame[0])
+    utime, ltime = sharkPy.get_pkt_times(pkt)
+    
+    if(new_str_data is None):
+        new_str_data=fd
+    
+    newbd = binascii.a2b_hex(new_str_data)
+    fw.pcap_write_packet(outfile, utime,ltime,fdl,newbd,errbuf)
+
+fw.pcap_close(outfile)
 
