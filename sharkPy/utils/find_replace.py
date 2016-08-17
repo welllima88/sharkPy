@@ -96,7 +96,7 @@ def find_replace_data(pkt, test_val, field_name, replace_with=None, condition_fu
         data_len, first_byte_index, last_byte_index, data_as_string, data_as_binary = get_node_data_details(node)
         
         if(True == enforce_bounds and len(hex_replace)!=data_len*2):
-            raise AttributeError("Enforcing field bounds and replacement byte length is different from field byte length:" +str(len(hex_replace))+','+str(data_len))
+            raise AttributeError("Enforcing field bounds and replacement byte length is different from field byte length:" +str(len(hex_replace)/2)+','+str(data_len))
     
         if(False == condition_funct(data_as_string, hex_test_val, pkt)):
             continue
