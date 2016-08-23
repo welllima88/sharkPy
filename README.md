@@ -232,12 +232,11 @@ Number of child nodes: 17<br/>
 
 ...<remaining edited out><br/>
 
-\>>> pkt_dict={}<br/>
-
 ### Must always close sessions<br/>
 \>>> sharkPy.close(dissection)<br/>
 
 ### Take a packet dissection tree and index all nodes by their names (abbrev field)<br/> 
+\>>> pkt_dict={}<br/>
 \>>> sharkPy.collect_proto_ids(rtn_pkt_dissections_list[0],pkt_dict)<br/>
 
 ### Here are all the keys used to index this packet dissection<br/>
