@@ -168,12 +168,14 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 ### Supported options so far are DECODE_AS and NAME_RESOLUTION (use option to disable)<br/>
 \>>> in_options=[(sharkPy.disopt.DECODE_AS, r'tcp.port==8888-8890,http'),(sharkPy.disopt.DECODE_AS, r'tcp.port==9999:3,http')]<br/>
 
-### Get list of dissected packets represented as python objects<br/>
-\>>> sorted_rtn_list=sharkPy.dissect_file(r'/home/me/tst.pcapng',timeout=20,options=in_options)<br/>
+### Start capture and dissection. Note that caller must have appropriate permissions. Running as root could be dangerous! <br/>
+\>>> dissection=sharkPy.dissect_file(r'/home/me/capfile.pcap',options=in_options)<br/>
 
-### Walk each packet in list and print representation of packets<br/>
-\>>> for each in sorted_rtn_list:<br/>
-...     sharkPy.walk_print(each)<br/>
+### Use sharkPy.get_next to get packet dissections of captured packets.<br/>
+rtn_pkt_dissections_list=[]
+\>>> for cnt in xrange(13):<br/>
+...     pkt=sharkPy.get_next(dissection)<br/>
+...     rtn_pkt_dissections_list.append(pkt)
 
 Node Attributes: <br/>
  abbrev:     frame.<br/>
@@ -225,8 +227,11 @@ Number of child nodes: 17<br/>
 
 \>>> pkt_dict={}<br/>
 
+### Must always close capture sessions<br/>
+\>>> sharkPy.close(dissection)<br/>
+
 ### Take a packet dissection tree and index all nodes by their names (abbrev field)<br/> 
-\>>> sharkPy.collect_proto_ids(sorted_rtn_list[0],pkt_dict)<br/>
+\>>> sharkPy.collect_proto_ids(rtn_pkt_dissections_list[0],pkt_dict)<br/>
 
 ### Here are all the keys used to index this packet dissection<br/>
 \>>> print pkt_dict.keys()<br/>
@@ -269,7 +274,7 @@ Number of child nodes: 15<br/>
  tcp.urgent_pointer<br/>
  
 ### Short-cut for finding a node by name:<br/>
-\>>> val_list=sharkPy.get_node_by_name(sorted_rtn_list[0], 'ip')<br/>
+\>>> val_list=sharkPy.get_node_by_name(rtn_pkt_dissections_list[0], 'ip')<br/>
 
 ### Each node in a packet dissection tree has attributes and a child node list.<br/>
 \>>> pkt = val_list[0]<br/>
