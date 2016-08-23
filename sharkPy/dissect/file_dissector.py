@@ -553,9 +553,10 @@ def run(exit_event, writePipe, filename, timeout, options=[]):
         t=Thread(target=fd.dissect, args=(argc, Argv))
         t.setDaemon(True)
         t.start()
+        t.join()
         
         #waits until exit event is set
-        fd.exit.wait()
+        #fd.exit.wait()
 
     except Exception as e:
         print e
@@ -623,9 +624,12 @@ if __name__=='__main__':
     
     if(dissection is not None):
 
-        for cnt in xrange(1808):
-            pkt=get_next(dissection,3)
-            walk_print(pkt)
+        for cnt in xrange(1809):
+            try: 
+                pkt=get_next(dissection)
+                walk_print(pkt)
+            except Exception as e:
+                pass
             
             
         
