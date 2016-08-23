@@ -49,7 +49,7 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 
 ## sharkPy API -- examples in following sections
 
-###Disecting packets from wire or from file
+###Disecting packets from file
 <b>dissect_file(file_path, options=[], timeout=10):</b> collect packets from packet capture file delivering packet dissections when requested using get_next function.<br/>
     -- name of packet capture file.<br/>
     -- collection and dissection options. Options are disopt.DECODE_AS and disopt.NAME_RESOLUTION.<br/>
@@ -69,7 +69,8 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
     -- dissect_process: tuple returned from dissect_file.<br/>
     -- RETURNS None.<br/>
     -- NOTE: close MUST be called on each session.
-    
+
+###Disecting packets from wire
 <b>dissect_wire(interface, options=[], timeout=None):</b> collect packets from interface delivering packet dissections when requested using get_next function.<br/>
     -- name of interface to capture from.<br/>
     -- collection and dissection options. Options are disopt.DECODE_AS, disopt.NAME_RESOLUTION, and disopts.NOT_PROMISCUOUS.<br/>
