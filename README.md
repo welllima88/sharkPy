@@ -234,7 +234,7 @@ Number of child nodes: 17<br/>
 
 \>>> pkt_dict={}<br/>
 
-### Must always close capture sessions<br/>
+### Must always close sessions<br/>
 \>>> sharkPy.close(dissection)<br/>
 
 ### Take a packet dissection tree and index all nodes by their names (abbrev field)<br/> 
