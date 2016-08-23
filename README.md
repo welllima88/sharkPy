@@ -17,6 +17,12 @@ SharkPy comes with five modules that allows one to explore, create, and/or modif
 
 5. sharkPy.utils -- a set of utility functions
 
+##Versioning
+
+current: beta 0.1 - flesh out desired functionality and api
+next:    beta 0.2 - make Windows friendly.
+future:  refactor tshark code to modularize functionality. 
+
 ##Design Goals
 
 1. Deliver dissected packet data to callers as native python objects.<br/>
