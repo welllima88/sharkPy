@@ -175,10 +175,10 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 ### Supported options so far are DECODE_AS and NAME_RESOLUTION (use option to disable)<br/>
 \>>> in_options=[(sharkPy.disopt.DECODE_AS, r'tcp.port==8888-8890,http'),(sharkPy.disopt.DECODE_AS, r'tcp.port==9999:3,http')]<br/>
 
-### Start capture and dissection. Note that caller must have appropriate permissions. Running as root could be dangerous! <br/>
+### Start file read and dissection.<br/>
 \>>> dissection=sharkPy.dissect_file(r'/home/me/capfile.pcap',options=in_options)<br/>
 
-### Use sharkPy.get_next to get packet dissections of captured packets.<br/>
+### Use sharkPy.get_next to get packet dissections of read packets.<br/>
 rtn_pkt_dissections_list=[]
 \>>> for cnt in xrange(13):<br/>
 ...     pkt=sharkPy.get_next(dissection)<br/>
