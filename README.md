@@ -44,20 +44,25 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 ## sharkPy API -- examples in following sections
 
 ###Disecting packets from wire or from file
-<b>dissect_file(file_path, timeout=10, options=[]):</b> dissect packet capture file and return dissected packets as native python objects<br/>
-    -- file_path: path to capture file<br/>
-    -- timeout: how long to wait (in seconds) before dissection attempt fails<br/>
-    -- options a set of options for file dissection. Options are disopt.DECODE_AS, disopt.NAME_RESOLUTION.<br/>
-    -- RETURNS: List of packet dissections as described below.<br/>
+<b>dissect_file(file_path, options=[], timeout=10):</b> collect packets from packet capture file delivering packet dissections when requested using get_next function.<br/>
+    -- name of packet capture file.<br/>
+    -- collection and dissection options. Options are disopt.DECODE_AS and disopt.NAME_RESOLUTION.<br/>
+    -- timeout: amount of time (in seconds) to wait before file open fails.<br/>
+    -- RETURNS tuple (p, exit_event, shared_pipe).<br/>
+        --p: dissection process handle.<br/>
+        --exit_event: event handler used to signal that collection should stop.<br/>
+        --shared_pipe: shared pipe that dissector returns dissection trees into.<br/>
+        --NOTE: users should not directly interact with these return objects. Instead returned tuple is passed into get_next and close functions as input param.<br/>
+        
+<b>get_next(dissect_process,timeout=None):</b> get next available packet dissection.<br/>
+    -- dissect_process: tuple returned from dissect_file.<br/>
+    -- timeout: amount to time to wait (in seconds) before operation timesout.<br/>
+    -- RETURNS root node of packet dissection tree.<br/>
     
-<b>walk_print(root_node):</b> Starting at root node of dissection tree, print representation of node, then do same for each child recursively.<br/>
-    -- root_node: starting node in dissection tree to starting printing<br/>
+<b>close(dissect_process):</b> stop and clean up.<br/>
+    -- dissect_process: tuple returned from dissect_file.<br/>
     -- RETURNS None.<br/>
-    
-<b>collect_proto_ids(root_node, pkt_dict):</b> create dictionary representation of packet dissection using the 'abbrev' attribute as key.<br/>
-    -- root_node: starting point in packet dissection tree where operation starts.<br/>
-    -- pkt_dict: An empty dictionary that function will populate.<br/>
-    -- RETURNS None.<br/>
+    -- NOTE: close MUST be called on each session.
     
 <b>dissect_wire(interface, options=[], timeout=None):</b> collect packets from interface delivering packet dissections when requested using get_next function.<br/>
     -- name of interface to capture from.<br/>

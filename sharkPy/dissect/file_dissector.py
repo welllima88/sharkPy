@@ -566,7 +566,7 @@ def run(exit_event, writePipe, filename, timeout, options=[]):
         #shared_queue.cancel_join_thread()
         sys.exit(0)
  
-def dissect_file(filename, options=[], timeout=None):
+def dissect_file(filename, timeout=None, options=[]):
     
     read_pipe, write_pipe = pPipe()
     exit_event=Event()
