@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 # Wireshark - Network traffic analyzer
 # By Gerald Combs <gerald@wireshark.org>
 # Copyright 1998 Gerald Combs
@@ -21,26 +20,24 @@
 
 ###########################################################################
 #
-# wire_dissector.py
+# file_dissector.py
 #
-# wire_dissector.py author: Mark Landriscina <mlandri1@jhu.edu>
+# file_dissector.py author: Mark Landriscina<mlandri1@jhu.edu>
 # Created on: Jul 31, 2016
 #
-# wire_dissector reads in packets from network interface in format supported by
-# wireshark and provides the wireshark dissection of packets as native Python objects.
-# Assumes caller has adequate permissions. YOU HAVE BEEN WARNED. This
-# file and the code contained herein is released under the same license/terms as is 
-# Wireshark. See description above.
+# file_dissector reads in packet capture file in format supported by
+# wireshark and provides the wireshark dissection of packet in the
+# file as native Python objects.
+#
+# This file and the code contained herein is released under the same
+# license/terms as is Wireshark. See description above.
 #
 ############################################################################
 
-import sys, signal
+import sys
 import os,ctypes,ctypes.util,re, site
-from multiprocessing import Process, Event
-from multiprocessing import Pipe as pPipe
+from multiprocessing import Process
 from multiprocessing import Queue as pQueue
-from threading import Thread
-
 
 #################################################################################################
 # class opaque:
@@ -220,18 +217,17 @@ class node(object):
 
         return rtn
 
-
-class file_dissector(Process):
+class file_dissector(object):
     
-    def __init__(self, exit_event, writePipe, filename, wireshark_plugin_dir=None):
+    def __init__(self, shared_queue, file_path, wireshark_plugin_dir=None):
         
-        Process.__init__(self)
+        #Process.__init__(self)
         
         #Adds site package dir to lib paths, so we can find our shared libs.
         self.slpath=[site.getsitepackages()[0]]
         
-        self.writePipe=writePipe
-        self.filename=filename
+        self.shared_queue=shared_queue
+        self.file_path=file_path
         self.dumpcap_path = getDumpcapExecPath()
         self.wireshark_plugin_dir=None
         self.wireshark_lib_path=None
@@ -246,7 +242,6 @@ class file_dissector(Process):
         
         self.setExport=None
         self.dissect=None
-        self.stop_capture=None
         
         self.SAVE_ATTR=ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(attribute))
         self.copy_out_attr=self.SAVE_ATTR(self.save_attr)
@@ -263,9 +258,6 @@ class file_dissector(Process):
         self.roots={}
         self.root_list=[]
         
-        #When set, exit subprocess
-        self.exit = exit_event
-
     def set_api(self):
 
         libs=[self.wiretap_lib_path,
@@ -289,7 +281,6 @@ class file_dissector(Process):
         self.setExport=self.sharkPylib.set_export_function
         self.setExport.arg_types=[self.SAVE_ATTR]
         self.setExport.restype=None
-        
         
         self.setExport(self.copy_out_attr)
         
@@ -391,11 +382,7 @@ class file_dissector(Process):
             os.environ["WIRESHARK_PLUGIN_DIR"]=site.getsitepackages()[0]+'sharkPy/64_bit_libs/plugins'
             
     def save_attr(self, in_attr):
-        
-        #edited_fvalue = in_attr.contents.fvalue
-        #if(len(edited_fvalue)>10):
-        #    edited_fvalue=in_attr.contents.fvalue[:10]+"<snip>"
-        
+            
         new_item=item(in_attr.contents.abbrev,
                       in_attr.contents.name,
                       in_attr.contents.blurb,
@@ -410,22 +397,9 @@ class file_dissector(Process):
                       in_attr.contents.start,
                       in_attr.contents.offset)     
         
-        #terminating node, process packet and deliver it to caller
+        #skip over if terminating node
         if(export_type.FINI == in_attr.contents.type):
-            #Recreate node relationships using node ids and parent ids
-            self.create_heirarchy()
-                       
-            #Pass most recently dissected packet to caller
-            pkt=self.root_list[-1]
-            self.writePipe.send(pkt)
-            self.root_list.remove(pkt)
-            
-            self.byparent.clear()
-            self.byself.clear()
-            self.roots.clear()
-            
-            #done with this packet
-            return
+            return 
         
         #make node from incoming attribute
         nxt=node(new_item)
@@ -455,7 +429,7 @@ class file_dissector(Process):
                 
                 if p_id != c_id:
                     parent.children.append(child)
-                    
+     
 class disopt(object):
     
     NOT_PROMISCUOUS=1
@@ -465,7 +439,6 @@ class disopt(object):
     
     wire_opts={NOT_PROMISCUOUS:'-p',
                DECODE_AS:'-d',
-               PKT_CNT:'-c',
                NAME_RESOLUTION:'-n'}
     
     file_opts={DECODE_AS:'-d',
@@ -473,14 +446,9 @@ class disopt(object):
     
     opt_patterns={NOT_PROMISCUOUS:None,
                  DECODE_AS:r'\w+(\.[a-zA-Z]+)*==\d+([-:]\d+)?,\w+',
-                 PKT_CNT:'\d+',
                  NAME_RESOLUTION:None}
-                               
+            
 def walk_print(a_node):
-    
-    if(a_node is None):
-        return
-    
     print a_node
     for each in a_node.children:
         walk_print(each)
@@ -507,10 +475,10 @@ def getDumpcapExecPath():
     for path in dirlist:
         dlist = os.listdir(path)
         if(r'dumpcap' in dlist):
-            rtnpath=path
+            rtnpath=path+os.path.sep
             break
         elif(r'dumpcap.exe' in dlist):
-            rtnpath=path
+            rtnpath=path+os.path.sep
             break
         
     if(None == rtnpath):
@@ -518,44 +486,49 @@ def getDumpcapExecPath():
     
     return rtnpath
 
-def run(exit_event, writePipe, filename, timeout, options=[]):
+def run(shared_queue, file_path, timeout, options=[]):
 
     fd=None
     dPath= getDumpcapExecPath()
-    cmd_options=[dPath,'-r', filename,]
-    
+    cmd_options=[dPath,'-r', file_path,]
+
     #options is a list of tuples of the form (option, value)
     for opt in options:
         
         #Must be type currently supported.
         if(opt[0] not in disopt.file_opts.keys()):
-            raise AttributeError("Not a valid dissect_wire option:"+str(opt))
+            raise AttributeError("Not a valid dissect_file option:"+str(opt))
         
         opt_pattern=disopt.opt_patterns[opt[0]]
         if(opt_pattern is not None and re.match(opt_pattern, opt[1]) is None):
             raise AttributeError("Invalid option syntax:"+str(opt))
         
-        cmd_options.append(disopt.file_opts[opt[0]])
+        cmd_options.append(disopt.wire_opts[opt[0]])
         if(opt[1] is not None):
             cmd_options.append(opt[1])
     
     try:
-        fd=file_dissector(exit_event, writePipe, filename)
+        fd=file_dissector(shared_queue, file_path)
         argc = ctypes.c_int(len(cmd_options))
         myargv = ctypes.c_char_p *(len(cmd_options))
         argv = myargv()
         
         for idx in xrange(len(cmd_options)):
             argv[idx]=cmd_options[idx]
-        
+                
         Argv = ctypes.pointer(argv)
         
-        t=Thread(target=fd.dissect, args=(argc, Argv))
-        t.setDaemon(True)
-        t.start()
+        #Run tshark dissection functionality. 
+        fd.dissect(argc, Argv)
         
-        #waits until exit event is set
-        fd.exit.wait()
+        #Recreate node relationships using node ids and parent ids
+        fd.create_heirarchy()
+        
+        #Sort root nodes based on id value. Puts packets in order from first to last.
+        sorted_rtn_list=sorted( fd.root_list, key=lambda node: node.attributes.id )
+        
+        #Pass sorted packet list to caller via shared queue provided by caller.
+        fd.shared_queue.put(sorted_rtn_list)
 
     except Exception as e:
         print e
@@ -563,73 +536,45 @@ def run(exit_event, writePipe, filename, timeout, options=[]):
     
     finally:
         #We are done. Dissection process terminates freeing all its resources.
-        #shared_queue.cancel_join_thread()
         sys.exit(0)
- 
-def dissect_file(filename, options=[], timeout=None):
+
+def dissect_file(file_path, timeout=60, options=[]):
+    shared_queue = pQueue()
+    sorted_rtn_list=None
+    the_timeout=timeout
     
-    read_pipe, write_pipe = pPipe()
-    exit_event=Event()
-    p=None
-                 
     try:
-        p=Process(target=run,args=(exit_event, write_pipe, filename ,timeout, options))
+        #carry out dissections and return results as a dissect object
+        p=Process(target=run,args=(shared_queue, file_path ,timeout,options))
+        
         p.daemon=True
         p.start()
 
     except Exception as e:
         print e.message, e.args
         raise e
+           
+    try:
+        sorted_rtn_list=shared_queue.get(timeout=the_timeout)
+    except Exception as e:
+        print e
     
-    write_pipe.close()
-    return (p,exit_event, (read_pipe, write_pipe))
+    finally:
+        shared_queue.close()
+    
+    return sorted_rtn_list
 
-def get_next(dissect_process,timeout=None):
-
-    pkt=None
-    timeout_secs=timeout
-    read_pipe, write_pipe=dissect_process[2]
-    pkt=read_pipe.recv()
-
-    #try:
-    #    pkt=shared_queue.get(timeout=timeout_secs)
-    #except Exception as e:
-    #    raise e
-    
-    return pkt
-    
-#MUST call close on dissect process to clean-up.
-#will end up with orphaned processes otherwise.
-def close(dissect_process):
-    
-    proc=dissect_process[0]
-    exit_event=dissect_process[1]
-    read_pipe, write_pipe=dissect_process[2]
-    
-    #Close shared queue
-    read_pipe.close()
-
-    #Signal child processes to exit
-    exit_event.set()     
-    
     
 #TEST main#####TEST main#####TEST maim########TEST main#####TEST main#####TEST main#####TEST maim########TEST main
 if __name__=='__main__':
     
     in_options=[(disopt.DECODE_AS, r'tcp.port==8888-8890,http'),
-             (disopt.DECODE_AS, r'tcp.port==9999:3,http'),
-             (disopt.NOT_PROMISCUOUS,None)]
-    dissection=dissect_file(r'/home/me/Downloads/noise.pcap')
+                (disopt.DECODE_AS, r'tcp.port==9999:3,http')]
     
-    if(dissection is not None):
-
-        for cnt in xrange(1808):
-            pkt=get_next(dissection,3)
-            walk_print(pkt)
+    sorted_rtn_list=dissect_file(r'/home/me/Downloads/noise.pcap',timeout=60)
+    
+    for pkt in sorted_rtn_list:
+        walk_print(pkt)
             
             
-        
-        close(dissection)
-        
-        
-        
+            

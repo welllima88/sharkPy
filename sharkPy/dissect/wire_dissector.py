@@ -422,6 +422,10 @@ class wire_dissector(Process):
             self.sharedQueue.put(pkt)
             self.root_list.remove(pkt)
             
+            self.byparent.clear()
+            self.byself.clear()
+            self.roots.clear()
+            
             #done with this packet
             return
         
