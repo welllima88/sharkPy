@@ -65,7 +65,7 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
     -- timeout: amount to time to wait (in seconds) before operation timesout.<br/>
     -- RETURNS root node of packet dissection tree.<br/>
     
-<b>close(dissect_process):</b> stop and clean up.<br/>
+<b>close_file(dissect_process):</b> stop and clean up.<br/>
     -- dissect_process: tuple returned from dissect_file.<br/>
     -- RETURNS None.<br/>
     -- NOTE: close MUST be called on each session.
@@ -86,7 +86,7 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
     -- timeout: amount to time to wait (in seconds) before operation timesout.<br/>
     -- RETURNS root node of packet dissection tree.<br/>
     
-<b>close(dissect_process):</b> stop and clean up from live capture.<br/>
+<b>close_wire(dissect_process):</b> stop and clean up from live capture.<br/>
     -- dissect_process: tuple returned from dissect_wire.<br/>
     -- RETURNS None.<br/>
     -- NOTE: close MUST be called on each capture session.
@@ -233,7 +233,7 @@ Number of child nodes: 17<br/>
 ...<remaining edited out><br/>
 
 ### Must always close sessions<br/>
-\>>> sharkPy.close(dissection)<br/>
+\>>> sharkPy.close_file(dissection)<br/>
 
 ### Take a packet dissection tree and index all nodes by their names (abbrev field)<br/> 
 \>>> pkt_dict={}<br/>
@@ -330,7 +330,7 @@ Transmission Control Protocol<br/>
 ...     sharkPy.walk_print(pkt) ##much better idea to save pkts in a list<br/>
 
 ### Must always close capture sessions<br/>
-\>>> sharkPy.close(dissection)<br/>
+\>>> sharkPy.close_wire(dissection)<br/>
 
 ## WRITE DATA (packets) TO NETWORK
 

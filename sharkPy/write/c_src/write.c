@@ -341,6 +341,7 @@ pcap_write_packet(dumpfile *dumpobjs,
     phdr.len=datalen;
 
     pcap_dump((unsigned char *)dumper,(const struct pcap_pkthdr *)&phdr,pktdata);
+    pcap_dump_flush(dumpobjs->dumper);
 
 fail:
 	if( rtn <0 && NULL != errbuf )
@@ -360,6 +361,8 @@ close_pcap_dump(dumpfile *dumpobjs)
 	{
 		goto fail;
 	}
+
+	pcap_dump_close(dumpobjs->dumper);
     pcap_close(dumpobjs->pd);
     free(dumpobjs);
 
