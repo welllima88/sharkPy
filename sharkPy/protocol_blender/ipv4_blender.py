@@ -16,7 +16,7 @@ def ipv4_checksum_fixup(ip_hex_string):
         sums+=val
     
     #4 most significant bits are carry bits.
-    carry=(sums>>16)&0xf
+    carry=(sums>>16)&0xffff
 
     #16 least significant bits are sum
     sums&=0xffff
@@ -31,7 +31,7 @@ def ipv4_checksum_fixup(ip_hex_string):
         sums+=carry
         
         #repeat carry/sum addition if carry bits != 0
-        carry=(sums>>16)&0xf
+        carry=(sums>>16)&0xffff
         sums&=0xffff
     
     #flip all bits in sum to get checksum, convert to hex string, and pad as needed
@@ -96,11 +96,11 @@ def ipv4_find_replace(pkt,
 if __name__=='__main__':
     
     #pass hex string representation of ip header bytes
-    chksum=ipv4_checksum("4500004543f80000ff11870ac0a84f01e00000fb")
+    chksum=ipv4_checksum_fixup("4500004543f80000ff11870ac0a84f01e00000fb")
     
     if('870a' != chksum):
         raise RuntimeError("Failed to correctly calculate ip header")
     
-    print hex(chksum)
+    print chksum
     
     

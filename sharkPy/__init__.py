@@ -9,3 +9,4 @@ from sharkPy.utils.utils import do_funct_walk, get_node_by_name, get_node_data_d
 from sharkPy.write.file_writer import file_writer
 from sharkPy.utils.find_replace import find_replace_data, condition_data_equals, condition_always_true, condition_data_not_equals
 from sharkPy import protocol_blender
+from sharkPy.protocol_blender.tcp_blender import tcp_checksum_fixup
