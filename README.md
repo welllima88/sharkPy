@@ -52,141 +52,141 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 
 ###Disecting packets from file
 <b>dissect_file(file_path, options=[], timeout=10):</b> collect packets from packet capture file delivering packet dissections when requested using get_next function.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* name of packet capture file.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* collection and dissection options. Options are disopt.DECODE_AS and disopt.NAME_RESOLUTION.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* timeout: amount of time (in seconds) to wait before file open fails.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* RETURNS tuple (p, exit_event, shared_pipe).<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*p: dissection process handle.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*exit_event: event handler used to signal that collection should stop.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*shared_pipe: shared pipe that dissector returns dissection trees into.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*NOTE: users should not directly interact with these return objects. Instead returned tuple is passed into get_next and close functions as input param.<br/>
+* name of packet capture file.<br/>
+* collection and dissection options. Options are disopt.DECODE_AS and disopt.NAME_RESOLUTION.<br/>
+* timeout: amount of time (in seconds) to wait before file open fails.<br/>
+* RETURNS tuple (p, exit_event, shared_pipe).<br/>
+***p: dissection process handle.<br/>
+***exit_event: event handler used to signal that collection should stop.<br/>
+***shared_pipe: shared pipe that dissector returns dissection trees into.<br/>
+***NOTE: users should not directly interact with these return objects. Instead returned tuple is passed into get_next and close functions as input param.<br/>
         
 <b>get_next(dissect_process,timeout=None):</b> get next available packet dissection.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* dissect_process: tuple returned from dissect_file.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* timeout: amount to time to wait (in seconds) before operation timesout.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* RETURNS root node of packet dissection tree.<br/>
+* dissect_process: tuple returned from dissect_file.<br/>
+* timeout: amount to time to wait (in seconds) before operation timesout.<br/>
+* RETURNS root node of packet dissection tree.<br/>
     
 <b>close_file(dissect_process):</b> stop and clean up.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* dissect_process: tuple returned from dissect_file.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* RETURNS None.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* NOTE: close MUST be called on each session.
+* dissect_process: tuple returned from dissect_file.<br/>
+* RETURNS None.<br/>
+* NOTE: close MUST be called on each session.
 
 ###Disecting packets from wire
 <b>dissect_wire(interface, options=[], timeout=None):</b> collect packets from interface delivering packet dissections when requested using get_next function.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* name of interface to capture from.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* collection and dissection options. Options are disopt.DECODE_AS, disopt.NAME_RESOLUTION, and disopts.NOT_PROMISCUOUS.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* timeout: amount of time (in seconds) to wait before start capture fails.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* RETURNS tuple (p, exit_event, shared_queue).<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*p: dissection process handle.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*exit_event: event handler used to signal that collection should stop.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*shared_queue: shared queue that dissector returns dissection trees into.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*NOTE: users should not directly interact with these return objects. Instead returned tuple is passed into get_next and close functions as input param.<br/>
+* name of interface to capture from.<br/>
+* collection and dissection options. Options are disopt.DECODE_AS, disopt.NAME_RESOLUTION, and disopts.NOT_PROMISCUOUS.<br/>
+* timeout: amount of time (in seconds) to wait before start capture fails.<br/>
+* RETURNS tuple (p, exit_event, shared_queue).<br/>
+***p: dissection process handle.<br/>
+***exit_event: event handler used to signal that collection should stop.<br/>
+***shared_queue: shared queue that dissector returns dissection trees into.<br/>
+***NOTE: users should not directly interact with these return objects. Instead returned tuple is passed into get_next and close functions as input param.<br/>
         
 <b>get_next(dissect_process,timeout=None):</b> get next available packet dissection from live capture.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* dissect_process: tuple returned from dissect_wire.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* timeout: amount to time to wait (in seconds) before operation timesout.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* RETURNS root node of packet dissection tree.<br/>
+* dissect_process: tuple returned from dissect_wire.<br/>
+* timeout: amount to time to wait (in seconds) before operation timesout.<br/>
+* RETURNS root node of packet dissection tree.<br/>
     
 <b>close_wire(dissect_process):</b> stop and clean up from live capture.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* dissect_process: tuple returned from dissect_wire.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* RETURNS None.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* NOTE: close MUST be called on each capture session.
+* dissect_process: tuple returned from dissect_wire.<br/>
+* RETURNS None.<br/>
+* NOTE: close MUST be called on each capture session.
 
 ### Writing data/packets on wire or to file
 <b>wire_writer(write_interface_list):</b> wire_writer contructor. Used to write arbitrary data to interfaces.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* write_interface_list: list of interface names to write to.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* RETURNS: wire_writer object.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* wire_writer.cmd: pass a command to writer.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*wr.cmd(command=wr.WRITE_BYTES, command_data=data_to_write , command_timeout=2)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*wr.cmd(command=wr.SHUT_DOWN_ALL,command_data=None,command_data=2)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*wr.cmd(command=wr.SHUT_DOWN_NAMED, command_data=interface_name, command_data=2)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* wire_writer.get_rst(timeout=1): returns tuple (success/failure, number_of_bytes_written)<br/>
+* write_interface_list: list of interface names to write to.<br/>
+* RETURNS: wire_writer object.<br/>
+*** wire_writer.cmd: pass a command to writer.<br/>
+****wr.cmd(command=wr.WRITE_BYTES, command_data=data_to_write , command_timeout=2)<br/>
+****wr.cmd(command=wr.SHUT_DOWN_ALL,command_data=None,command_data=2)<br/>
+****wr.cmd(command=wr.SHUT_DOWN_NAMED, command_data=interface_name, command_data=2)<br/>
+*** wire_writer.get_rst(timeout=1): returns tuple (success/failure, number_of_bytes_written)<br/>
         
 <b>file_writer():</b> Creates a new file_writer object to write packets to an output pcap file.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;*<b>make_pcap_error_buffer():</b> Creates a correctly sized and initialized error buffer. <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*Returns error buffer.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;*<b>pcap_write_file(output_file_path, error_buffer):</b> create and open new pcap output file.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*output_file_path: path for newly created file.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer. <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*Returns: ctypes.c_void_p, which is a context object required for other write related functions.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;*<b>pcap_write_packet(context, upper_time_val, lower_time_val, num_bytes_to_write, data_to_write, error_buffer):</b> writes packets to opened pcap output file.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*context: object returned by pcap_write_file().<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*upper_time_val: packet epoch time in seconds. Can be first value in tuple returned from utility function get_pkt_times().<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*lower_time_val: packet epoch time nano seconds remainder. Can be second value in tuple returned from utility function get_pkt_times().<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*num_bytes_to_write: number of bytes to write to file, size of data buffer.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*data_to_write: buffer of data to write.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*RETURNS 0 on success, -1 on failure. Error message will be available in err_buffer.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;*<b>pcap_close(context):</b> MUST be called to flush write buffer, close write file, and free allocated resources.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*context: object returned by pcap_write_file().<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*RETURNS: None.<br/>
+*<b>make_pcap_error_buffer():</b> Creates a correctly sized and initialized error buffer. <br/>
+***Returns error buffer.<br/>
+*<b>pcap_write_file(output_file_path, error_buffer):</b> create and open new pcap output file.<br/>
+***output_file_path: path for newly created file.<br/>
+***err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer. <br/>
+***Returns: ctypes.c_void_p, which is a context object required for other write related functions.<br/>
+*<b>pcap_write_packet(context, upper_time_val, lower_time_val, num_bytes_to_write, data_to_write, error_buffer):</b> writes packets to opened pcap output file.<br/>
+***context: object returned by pcap_write_file().<br/>
+***upper_time_val: packet epoch time in seconds. Can be first value in tuple returned from utility function get_pkt_times().<br/>
+***lower_time_val: packet epoch time nano seconds remainder. Can be second value in tuple returned from utility function get_pkt_times().<br/>
+***num_bytes_to_write: number of bytes to write to file, size of data buffer.<br/>
+***data_to_write: buffer of data to write.<br/>
+***err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer.<br/>
+***RETURNS 0 on success, -1 on failure. Error message will be available in err_buffer.<br/>
+*<b>pcap_close(context):</b> MUST be called to flush write buffer, close write file, and free allocated resources.<br/>
+***context: object returned by pcap_write_file().<br/>
+***RETURNS: None.<br/>
         
 ### Utility functions
 <b>do_funct_walk(root_node, funct, aux=None):</b> recursively pass each node in dissection tree (and aux) to function. Depth first walk.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* root_node: node in dissection tree that will be the first to be passed to function.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* funct: function to call.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* aux: optional auxilliary variable that will be passed in as parameter as part of each function call.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* RETURNS None.<br/>
+* root_node: node in dissection tree that will be the first to be passed to function.<br/>
+* funct: function to call.<br/>
+* aux: optional auxilliary variable that will be passed in as parameter as part of each function call.<br/>
+* RETURNS None.<br/>
     
 <b>get_node_by_name(root_node, name):</b> finds and returns a list of dissection nodes in dissection tree with a given name (i.e., 'abbrev').<br/>
- &nbsp;&nbsp;&nbsp;&nbsp;* root_node: root of dissection tree being passed into function.<br/>
- &nbsp;&nbsp;&nbsp;&nbsp;* name: Name of node used as match key. Matches again 'abbrev' attribute.<br/>
- &nbsp;&nbsp;&nbsp;&nbsp;* RETURNS: a list of nodes in dissection tree with 'abbrev' attribute that matches name. NOTE: abbrev attribute is not necessarily unique in a given dissection. tree. This is the reason that this function returns a LIST of matching nodes.<br/>
+ * root_node: root of dissection tree being passed into function.<br/>
+ * name: Name of node used as match key. Matches again 'abbrev' attribute.<br/>
+ * RETURNS: a list of nodes in dissection tree with 'abbrev' attribute that matches name. NOTE: abbrev attribute is not necessarily unique in a given dissection. tree. This is the reason that this function returns a LIST of matching nodes.<br/>
      
 <b>get_node_data_details(node):</b> Returns a tuple of values that describe the data in a given dissection node.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* node: node that will have its details provided.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* RETURNS: returns tuple, (data_len,first_byte_index, last_byte_index, data, binary_data).<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* data_len: number of bytes in node's data.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* first_byte_index: byte offset from start of packet where this node's data starts.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* last_byte_index: byte offset from start of packet where this node's data ends.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* data: string representation of node data.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* binary_data: binary representation of node data.<br/>
+* node: node that will have its details provided.<br/>
+* RETURNS: returns tuple, (data_len,first_byte_index, last_byte_index, data, binary_data).<br/>
+*** data_len: number of bytes in node's data.<br/>
+*** first_byte_index: byte offset from start of packet where this node's data starts.<br/>
+*** last_byte_index: byte offset from start of packet where this node's data ends.<br/>
+*** data: string representation of node data.<br/>
+*** binary_data: binary representation of node data.<br/>
         
 <b>get_pkt_times(pkt=input_packet):</b> Returns tuple containing packet timestamp information.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;*pkt: packet dissection tree returned from one of sharkPy's dissection routines.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;*RETURNS: The tuple (epoch_time_seconds, epoch_time_nanosecond_remainder). These two values are required for file_writer's <br/>
+*pkt: packet dissection tree returned from one of sharkPy's dissection routines.<br/>
+*RETURNS: The tuple (epoch_time_seconds, epoch_time_nanosecond_remainder). These two values are required for file_writer's <br/>
     
 <b>find_replace_data(pkt, field_name, test_val, replace_with=None, condition_funct=condition_data_equals, enforce_bounds=True, quiet=True):</b> A general search, match, and replace data in packets.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* pkt: packet dissection tree returned from one of sharkPy's dissection routines.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* field_name: the 'abbrev' field name that will have its data modified/replaced.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* test_val: data_val/buffer that will be used for comparison in matching function.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* replace_with: data that will replace the data in matching dissection fields.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* condition_funct: A function that returns True or False and has the prototype, condition_funct(node_val, test_val, pkt_dissection_tree). Default is the condition_data_equals() function that returns True if node_val == test_val. This is a literal byte for byte matching.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;*enforce_bounds: If true, enforces condition that len(replace_with) == len(node_data_to_be_replaced). Good idea to keep this set to its default, which is True.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;*quiet: If set to False, will print error msg to stdout if the target field 'abbrev' name cannot be found in packet dissection tree.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;*RETURNS: new packet data represented as a hex string or None if target field is not in packet.<br/>
+* pkt: packet dissection tree returned from one of sharkPy's dissection routines.<br/>
+* field_name: the 'abbrev' field name that will have its data modified/replaced.<br/>
+* test_val: data_val/buffer that will be used for comparison in matching function.<br/>
+* replace_with: data that will replace the data in matching dissection fields.<br/>
+* condition_funct: A function that returns True or False and has the prototype, condition_funct(node_val, test_val, pkt_dissection_tree). Default is the condition_data_equals() function that returns True if node_val == test_val. This is a literal byte for byte matching.<br/>
+*enforce_bounds: If true, enforces condition that len(replace_with) == len(node_data_to_be_replaced). Good idea to keep this set to its default, which is True.<br/>
+*quiet: If set to False, will print error msg to stdout if the target field 'abbrev' name cannot be found in packet dissection tree.<br/>
+*RETURNS: new packet data represented as a hex string or None if target field is not in packet.<br/>
     
 <b>condition_data_equals(node_val, test_val, pkt_dissection_tree=None):</b> A matching function that can be passed to find_replace_data().<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* node_val: value from the dissected packet that is being checked
-&nbsp;&nbsp;&nbsp;&nbsp;* test_val: value that node_val will be compared to.
-&nbsp;&nbsp;&nbsp;&nbsp;* pkt_dissection_tree: entire packet dissection tree. Not used in this comparison.
-&nbsp;&nbsp;&nbsp;&nbsp;* RETURNS True is a byte for byte comparison reveals that node_val == test_val. Otherwise, returns False.
+* node_val: value from the dissected packet that is being checked
+* test_val: value that node_val will be compared to.
+* pkt_dissection_tree: entire packet dissection tree. Not used in this comparison.
+* RETURNS True is a byte for byte comparison reveals that node_val == test_val. Otherwise, returns False.
     
 <b>condition_always_true(node_val=None, test_val=None, pkt_dissection_tree=None):</b> A matching function that can be passed to find_replace_data().<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* node_val: Not used in this comparison<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* test_val: Not used in this comparison<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* pkt_dissection_tree: entire packet dissection tree. Not used in this comparison.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* RETURNS True ALWAYS. Useful of the only matching criteria is that the target field exists in packet dissection.<br/>
+* node_val: Not used in this comparison<br/>
+* test_val: Not used in this comparison<br/>
+* pkt_dissection_tree: entire packet dissection tree. Not used in this comparison.<br/>
+* RETURNS True ALWAYS. Useful of the only matching criteria is that the target field exists in packet dissection.<br/>
 
 ###Protocol Blender
 
 <b>ipv4_find_replace(pkt_dissection, src_match_value=None, dst_match_value=None, new_srcaddr=None, new_dstaddr=None, update_checksum=True, condition_funct=sharkPy.condition_data_equals):</b> Modifies select ipv4 fields.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* pkt_dissection: packet dissection tree.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* src_match_value: current source ip address to look for (in hex). This value will be replaced.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* dst_match_value: current destination ip address to look for (in hex). This value will be replaced.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* new_srcaddr: replace current source ip address with this ip address (in hex).<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* new_dstaddr: replace current destination ip address with this ip address (in hex).<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* update_checksum: fixup ipv4 checksum if True (default).<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* condition_funct: matching function used to find correct packets to modify.<br/>
+* pkt_dissection: packet dissection tree.<br/>
+* src_match_value: current source ip address to look for (in hex). This value will be replaced.<br/>
+* dst_match_value: current destination ip address to look for (in hex). This value will be replaced.<br/>
+* new_srcaddr: replace current source ip address with this ip address (in hex).<br/>
+* new_dstaddr: replace current destination ip address with this ip address (in hex).<br/>
+* update_checksum: fixup ipv4 checksum if True (default).<br/>
+* condition_funct: matching function used to find correct packets to modify.<br/>
 	
 <b>tcp_find_replace(pkt_dissection, src_match_value=None, dst_match_value=None, new_srcport=None, new_dstport=None, update_checksum=True, condition_funct=sharkPy.condition_data_equals):</b> Modifies select fields for tcp over ipv4.
-&nbsp;&nbsp;&nbsp;&nbsp;* pkt_dissection: packet dissection tree.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* src_match_value: current source tcp port to look for (in hex). This value will be replaced.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* dst_match_value: current destination tcp port to look for (in hex). This value will be replaced.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* new_srcaddr: replace current source tcp port with this tcp port (in hex).<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* new_dstaddr: replace current destination tcp port with this tcp port (in hex).<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* update_checksum: fixup tcp checksum if True (default).<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;* condition_funct: matching function used to find correct packets to modify.<br/>
+* pkt_dissection: packet dissection tree.<br/>
+* src_match_value: current source tcp port to look for (in hex). This value will be replaced.<br/>
+* dst_match_value: current destination tcp port to look for (in hex). This value will be replaced.<br/>
+* new_srcaddr: replace current source tcp port with this tcp port (in hex).<br/>
+* new_dstaddr: replace current destination tcp port with this tcp port (in hex).<br/>
+* update_checksum: fixup tcp checksum if True (default).<br/>
+* condition_funct: matching function used to find correct packets to modify.<br/>
 
 ##DISSECT PACKETS IN A CAPTURE FILE
 
