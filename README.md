@@ -20,8 +20,7 @@ SharkPy comes with five modules that allows one to explore, create, and/or modif
 ##Versioning
 
 current: beta 0.1 - flesh out desired functionality and api</br>
-next:    beta 0.2 - make Windows friendly.</br>
-future:  refactor tshark code to modularize functionality.</br>
+next:    beta 0.2 - refactor tshark code to modularize functionality and cross compile for Windows.</br>
 
 ##Design Goals
 
