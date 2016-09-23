@@ -103,13 +103,13 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
     * wire_writer.get_rst(timeout=1): returns tuple (success/failure, number_of_bytes_written)<br/>
         
 <b>file_writer():</b> Creates a new file_writer object to write packets to an output pcap file.<br/>
-*<b>make_pcap_error_buffer():</b> Creates a correctly sized and initialized error buffer. <br/>
+* <b>make_pcap_error_buffer():</b> Creates a correctly sized and initialized error buffer. <br/>
     * Returns error buffer.<br/>
-*<b>pcap_write_file(output_file_path, error_buffer):</b> create and open new pcap output file.<br/>
+* <b>pcap_write_file(output_file_path, error_buffer):</b> create and open new pcap output file.<br/>
     * output_file_path: path for newly created file.<br/>
     * err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer. <br/>
     * Returns: ctypes.c_void_p, which is a context object required for other write related functions.<br/>
-*<b>pcap_write_packet(context, upper_time_val, lower_time_val, num_bytes_to_write, data_to_write, error_buffer):</b> writes packets to opened pcap output file.<br/>
+* <b>pcap_write_packet(context, upper_time_val, lower_time_val, num_bytes_to_write, data_to_write, error_buffer):</b> writes packets to opened pcap output file.<br/>
     * context: object returned by pcap_write_file().<br/>
     * upper_time_val: packet epoch time in seconds. Can be first value in tuple returned from utility function get_pkt_times().<br/>
     * lower_time_val: packet epoch time nano seconds remainder. Can be second value in tuple returned from utility function get_pkt_times().<br/>
@@ -117,7 +117,7 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
     * data_to_write: buffer of data to write.<br/>
     * err_buffer:error buffer object returned by make_pcap_error_buffer(). Any errors messages will be written to this buffer.<br/>
     * RETURNS 0 on success, -1 on failure. Error message will be available in err_buffer.<br/>
-*<b>pcap_close(context):</b> MUST be called to flush write buffer, close write file, and free allocated resources.<br/>
+* <b>pcap_close(context):</b> MUST be called to flush write buffer, close write file, and free allocated resources.<br/>
     * context: object returned by pcap_write_file().<br/>
     * RETURNS: None.<br/>
         
@@ -143,8 +143,8 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
     * binary_data: binary representation of node data.<br/>
         
 <b>get_pkt_times(pkt=input_packet):</b> Returns tuple containing packet timestamp information.<br/>
-*pkt: packet dissection tree returned from one of sharkPy's dissection routines.<br/>
-*RETURNS: The tuple (epoch_time_seconds, epoch_time_nanosecond_remainder). These two values are required for file_writer's <br/>
+* pkt: packet dissection tree returned from one of sharkPy's dissection routines.<br/>
+* RETURNS: The tuple (epoch_time_seconds, epoch_time_nanosecond_remainder). These two values are required for file_writer's <br/>
     
 <b>find_replace_data(pkt, field_name, test_val, replace_with=None, condition_funct=condition_data_equals, enforce_bounds=True, quiet=True):</b> A general search, match, and replace data in packets.<br/>
 * pkt: packet dissection tree returned from one of sharkPy's dissection routines.<br/>
@@ -152,9 +152,9 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 * test_val: data_val/buffer that will be used for comparison in matching function.<br/>
 * replace_with: data that will replace the data in matching dissection fields.<br/>
 * condition_funct: A function that returns True or False and has the prototype, condition_funct(node_val, test_val, pkt_dissection_tree). Default is the condition_data_equals() function that returns True if node_val == test_val. This is a literal byte for byte matching.<br/>
-*enforce_bounds: If true, enforces condition that len(replace_with) == len(node_data_to_be_replaced). Good idea to keep this set to its default, which is True.<br/>
-*quiet: If set to False, will print error msg to stdout if the target field 'abbrev' name cannot be found in packet dissection tree.<br/>
-*RETURNS: new packet data represented as a hex string or None if target field is not in packet.<br/>
+* enforce_bounds: If true, enforces condition that len(replace_with) == len(node_data_to_be_replaced). Good idea to keep this set to its default, which is True.<br/>
+* quiet: If set to False, will print error msg to stdout if the target field 'abbrev' name cannot be found in packet dissection tree.<br/>
+* RETURNS: new packet data represented as a hex string or None if target field is not in packet.<br/>
     
 <b>condition_data_equals(node_val, test_val, pkt_dissection_tree=None):</b> A matching function that can be passed to find_replace_data().<br/>
 * node_val: value from the dissected packet that is being checked
