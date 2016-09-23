@@ -129,7 +129,7 @@ if __name__=='__main__':
     tcpseglen=None
     tcpseglendata=None
     new_pcap=(r'/home/me/tcp_fix.pcap')
-    dissection=sharkPy.dissect_file(r'/home/me/Downloads/noise.pcap',timeout=20)
+    dissection=sharkPy.dissect_file(r'/home/me/Downloads/cb(1).pcap',timeout=20)
     server_port=hex(1337)[2:].zfill(4)
     new_server_port=hex(8080)[2:].zfill(4)
     client_port=hex(57180)[2:].zfill(4)
@@ -145,6 +145,8 @@ if __name__=='__main__':
         try: 
             #get pkt 
             pkt=sharkPy.get_next_from_file(dissection)
+            
+            sharkPy.walk_print(pkt)
                         
         except Exception as e:
             break

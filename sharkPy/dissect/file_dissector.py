@@ -620,7 +620,7 @@ if __name__=='__main__':
     in_options=[(disopt.DECODE_AS, r'tcp.port==8888-8890,http'),
              (disopt.DECODE_AS, r'tcp.port==9999:3,http'),
              (disopt.NOT_PROMISCUOUS,None)]
-    dissection=dissect_file(r'/home/me/Downloads/noise.pcap')
+    dissection=dissect_file(r'/home/me/challenge_template.pcapng')
     
     if(dissection is not None):
 
