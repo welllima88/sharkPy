@@ -58,7 +58,7 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 &nbsp;&nbsp;&nbsp;&nbsp;-- RETURNS tuple (p, exit_event, shared_pipe).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--p: dissection process handle.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--exit_event: event handler used to signal that collection should stop.<br/>
->>>>>>>>-shared_pipe: shared pipe that dissector returns dissection trees into.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--shared_pipe: shared pipe that dissector returns dissection trees into.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--NOTE: users should not directly interact with these return objects. Instead returned tuple is passed into get_next and close functions as input param.<br/>
         
 <b>get_next(dissect_process,timeout=None):</b> get next available packet dissection.<br/>
@@ -171,22 +171,22 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 ###Protocol Blender
 
 <b>ipv4_find_replace(pkt_dissection, src_match_value=None, dst_match_value=None, new_srcaddr=None, new_dstaddr=None, update_checksum=True, condition_funct=sharkPy.condition_data_equals):</b> Modifies select ipv4 fields.<br/>
-	-- pkt_dissection: packet dissection tree.<br/>
-	-- src_match_value: current source ip address to look for (in hex). This value will be replaced.<br/>
-	-- dst_match_value: current destination ip address to look for (in hex). This value will be replaced.<br/>
-	-- new_srcaddr: replace current source ip address with this ip address (in hex).<br/>
-	-- new_dstaddr: replace current destination ip address with this ip address (in hex).<br/>
-	-- update_checksum: fixup ipv4 checksum if True (default).<br/>
-	-- condition_funct: matching function used to find correct packets to modify.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- pkt_dissection: packet dissection tree.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- src_match_value: current source ip address to look for (in hex). This value will be replaced.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- dst_match_value: current destination ip address to look for (in hex). This value will be replaced.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- new_srcaddr: replace current source ip address with this ip address (in hex).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- new_dstaddr: replace current destination ip address with this ip address (in hex).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- update_checksum: fixup ipv4 checksum if True (default).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- condition_funct: matching function used to find correct packets to modify.<br/>
 	
 <b>tcp_find_replace(pkt_dissection, src_match_value=None, dst_match_value=None, new_srcport=None, new_dstport=None, update_checksum=True, condition_funct=sharkPy.condition_data_equals):</b> Modifies select fields for tcp over ipv4.
-	-- pkt_dissection: packet dissection tree.<br/>
-	-- src_match_value: current source tcp port to look for (in hex). This value will be replaced.<br/>
-	-- dst_match_value: current destination tcp port to look for (in hex). This value will be replaced.<br/>
-	-- new_srcaddr: replace current source tcp port with this tcp port (in hex).<br/>
-	-- new_dstaddr: replace current destination tcp port with this tcp port (in hex).<br/>
-	-- update_checksum: fixup tcp checksum if True (default).<br/>
-	-- condition_funct: matching function used to find correct packets to modify.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- pkt_dissection: packet dissection tree.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- src_match_value: current source tcp port to look for (in hex). This value will be replaced.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- dst_match_value: current destination tcp port to look for (in hex). This value will be replaced.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- new_srcaddr: replace current source tcp port with this tcp port (in hex).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- new_dstaddr: replace current destination tcp port with this tcp port (in hex).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- update_checksum: fixup tcp checksum if True (default).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-- condition_funct: matching function used to find correct packets to modify.<br/>
 
 ##DISSECT PACKETS IN A CAPTURE FILE
 
