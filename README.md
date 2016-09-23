@@ -51,7 +51,7 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 ## sharkPy API -- examples in following sections
 
 ###Disecting packets from file
-<b>dissect_file(file_path, options=[], timeout=10):</b> collect packets from packet capture file delivering packet dissections when requested using get_next function.<br/>
+<b>dissect_file(file_path, options=[], timeout=10):</b> collect packets from packet capture file delivering packet dissections when requested using get_next_from_file function.<br/>
 * name of packet capture file.<br/>
 * collection and dissection options. Options are disopt.DECODE_AS and disopt.NAME_RESOLUTION.<br/>
 * timeout: amount of time (in seconds) to wait before file open fails.<br/>
@@ -61,7 +61,7 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
     * shared_pipe: shared pipe that dissector returns dissection trees into.<br/>
     * NOTE: users should not directly interact with these return objects. Instead returned tuple is passed into get_next and close functions as input param.<br/>
         
-<b>get_next(dissect_process,timeout=None):</b> get next available packet dissection.<br/>
+<b>get_next_from_file(dissect_process,timeout=None):</b> get next available packet dissection.<br/>
 * dissect_process: tuple returned from dissect_file.<br/>
 * timeout: amount to time to wait (in seconds) before operation timesout.<br/>
 * RETURNS root node of packet dissection tree.<br/>
@@ -82,7 +82,7 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
     * shared_queue: shared queue that dissector returns dissection trees into.<br/>
     * NOTE: users should not directly interact with these return objects. Instead returned tuple is passed into get_next and close functions as input param.<br/>
         
-<b>get_next(dissect_process,timeout=None):</b> get next available packet dissection from live capture.<br/>
+<b>get_next_from_wire(dissect_process,timeout=None):</b> get next available packet dissection from live capture.<br/>
 * dissect_process: tuple returned from dissect_wire.<br/>
 * timeout: amount to time to wait (in seconds) before operation timesout.<br/>
 * RETURNS root node of packet dissection tree.<br/>
@@ -198,10 +198,10 @@ The first step is provide Wireshark/tshark capabilities as Python modules that c
 ### Start file read and dissection.<br/>
 \>>> dissection=sharkPy.dissect_file(r'/home/me/capfile.pcap',options=in_options)<br/>
 
-### Use sharkPy.get_next to get packet dissections of read packets.<br/>
+### Use sharkPy.get_next_from_file to get packet dissections of read packets.<br/>
 rtn_pkt_dissections_list=[]
 \>>> for cnt in xrange(13):<br/>
-...     pkt=sharkPy.get_next(dissection)<br/>
+...     pkt=sharkPy.get_next_from_file(dissection)<br/>
 ...     rtn_pkt_dissections_list.append(pkt)
 
 Node Attributes: <br/>
@@ -344,9 +344,9 @@ Transmission Control Protocol<br/>
 \>>> dissection=sharkPy.dissect_wire(r'eno16777736',options=in_options)<br/>
 \>>> Running as user "root" and group "root". This could be dangerous.<br/>
 
-### Use sharkPy.get_next to get packet dissections of captured packets.<br/>
+### Use sharkPy.get_next_from_wire to get packet dissections of captured packets.<br/>
 \>>> for cnt in xrange(13):<br/>
-...     pkt=sharkPy.get_next(dissection)<br/>
+...     pkt=sharkPy.get_next_from_wire(dissection)<br/>
 ...     sharkPy.walk_print(pkt) ##much better idea to save pkts in a list<br/>
 
 ### Must always close capture sessions<br/>
