@@ -20,17 +20,16 @@ sudo ./setup install<br/>
 First, make sharkPy directory and place Dockerfile into it. cd into this new directory.<br/>
 
 ##Build sharkPy Docker image
-docker build -t "ubuntu16_04:sharkPy" .   #Build will take a while and should be completely automated.
+docker build -t "ubuntu16_04:sharkPy" .   #Build will take a while and should be completely automated.<br/>
+(Note:sharkPy dist code will be in /sharkPy)<br/>
 
-####Note:sharkPy dist code will be in /sharkPy
-
-##Run interactively as Docker container. Mount dirs, access nets per Docker instructions. 
+##Run interactively as Docker container. 
 ###Should give you command prompt
-docker run -it ubuntu16_04:sharkPy /bin/bash
+docker run -it ubuntu16_04:sharkPy /bin/bash<br/>
 
 ###Command prompt and access to host NICs (to allow for network capture)
-docker run -it --net=host ubuntu16_04:sharkPy /bin/bash
+docker run -it --net=host ubuntu16_04:sharkPy /bin/bash<br/>
 
 ###Command prompt and mount directory (to access PCAPs)
-TO-DO
+TO-DO<br/>
 
