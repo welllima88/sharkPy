@@ -20,8 +20,9 @@ sudo ./setup install<br/>
 First, make sharkPy directory and place Dockerfile into it. cd into this new directory.<br/>
 
 ##Build sharkPy Docker image
-docker build -t "ubuntu16_04:sharkPy" .   #Build will take a while and should be completely automated.<br/>
-Notes: </br>
+docker build -t "ubuntu16_04:sharkPy" .
+Notes:
+* build will take a while and should be completely automated.<br/>
 * sharkPy dist code will be in /sharkPy<br/>
 * build creates Ubuntu 16.04 image and installs sharkPy as a Python module<br/>
 
