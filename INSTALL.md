@@ -1,5 +1,5 @@
 
-#INSTALL
+#VM INSTALL
 
 Should install/run on most linux distros as long as Wireshark version 2.0.1 or newer is installed and the following steps (or equivalent) are successful.<br/>
 
@@ -13,3 +13,24 @@ sudo apt-get install wireshark-dev       #if you didn't build/install wireshark 
 sudo apt-get install wireshark           #if you didn't build/install wireshark (be sure wireshark libs are in LD_LIBRARY_PATH)<br/>
 cd sharkPy<br/>
 sudo ./setup install<br/>
+
+#DOCKER
+
+##Set up
+First, make sharkPy directory and place Dockerfile into it. cd into this new directory.<br/>
+
+##Build sharkPy Docker image
+docker build -t "ubuntu16_04:sharkPy" .   #Build will take a while and should be completely automated.
+
+####Note:sharkPy dist code will be in /sharkPy
+
+##Run interactively as Docker container. Mount dirs, access nets per Docker instructions. 
+###Should give you command prompt
+docker run -it ubuntu16_04:sharkPy /bin/bash
+
+###Command prompt and access to host NICs (to allow for network capture)
+docker run -it --net=host ubuntu16_04:sharkPy /bin/bash
+
+###Command prompt and mount directory (to access PCAPs)
+TO-DO
+
