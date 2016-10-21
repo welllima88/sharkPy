@@ -24,11 +24,13 @@ SharkPy is provided "as-is" with NO WARRANTIES expressed or implied under GPLv2.
 ## Versioning
 
 just completed: `beta 0.1` - flesh out desired functionality and api
+* fun and useful
+* BUT code was `NOT rigorously tested` i.e. seems to work. However, not for the faint of heart.
 
 current: `beta 0.2` - refactor tshark code to modularize functionality and cross compile for Windows.
 * just started `10/21/16`
+* pen and paper-ing at the moment. Will update wiki as this progresses.
 * should be interesting :)
-
 
 ## Design Goals
 
