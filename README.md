@@ -1,6 +1,6 @@
 # sharkPy
 
-Current version: beta 0.1
+Current version: beta 0.1 (frozen)
 
 A python module to dissect, analyze, and interact with network packet data as native Python objects using Wireshark and libpcap capabilities. sharkPy dissect modules extend and otherwise modify Wireshark's tshark. SharkPy packet injection and pcap file writing modules wrap useful libpcap functionality.
 
@@ -23,8 +23,11 @@ SharkPy is provided "as-is" with NO WARRANTIES expressed or implied under GPLv2.
 
 ## Versioning
 
-current: `beta 0.1` - flesh out desired functionality and api
-next:    `beta 0.2` - refactor tshark code to modularize functionality and cross compile for Windows.
+just completed: `beta 0.1` - flesh out desired functionality and api
+
+current: `beta 0.2` - refactor tshark code to modularize functionality and cross compile for Windows.
+* just started `10/21/16`
+* should be interesting :)
 
 
 ## Design Goals
